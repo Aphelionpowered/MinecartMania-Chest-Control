@@ -8,6 +8,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
@@ -179,7 +180,11 @@ public class ItemCollectionManager {
 	public static void createItemContainers(MinecartManiaStorageCart minecart, HashSet<ComparableLocation> available) {
 		ArrayList<ItemContainer> containers = new ArrayList<ItemContainer>();
 		for (Location loc : available) {
-			Sign sign = (Sign)loc.getBlock().getState();
+			BlockState state = loc.getBlock().getState();
+			if(!(state instanceof Sign)) {
+				continue;
+			}
+			Sign sign = (Sign)state;
 			if (isItemCollectionSign(sign)) {
 				MinecartManiaLogger.getInstance().debug("Found Collect Item Sign");
 				bracketizeSign(sign);
