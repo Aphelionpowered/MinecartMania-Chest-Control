@@ -11,7 +11,7 @@
     <!-- Project information -->
     <groupId>com.afforess</groupId>
     <artifactId>minecartmaniachestcontrol</artifactId>
-    <version>dev-SNAPSHOT</version>
+    <version>1.2.9-SNAPSHOT</version>
     <name>Minecart Mania Chest Control</name>
     <url>http://afforess.com</url>
     <description>Chest Control handles everything inventory related. Chest Dispensers, item collection, item depositing, dispensers, furnaces, and any other inventory actions are controlled here.</description>
@@ -49,7 +49,7 @@
         <dependency>
             <groupId>com.afforess</groupId>
             <artifactId>minecartmaniacore</artifactId>
-            <version>dev-SNAPSHOT</version>
+            <version>1.2.9-SNAPSHOT</version>
         </dependency>
 
         <!-- Bukkit -->
