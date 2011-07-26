@@ -14,7 +14,6 @@ public class FurnaceDepositItemContainer extends GenericItemContainer implements
 		this.furnace = furnace;
 	}
 
-	@Override
 	public void doCollection(MinecartManiaInventory deposit) {
 		for (CompassDirection direction : directions) {
 			AbstractItem[] list = getItemList(direction);

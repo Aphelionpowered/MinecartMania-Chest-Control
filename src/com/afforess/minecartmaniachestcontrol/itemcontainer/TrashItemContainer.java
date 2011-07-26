@@ -16,7 +16,6 @@ public class TrashItemContainer extends GenericItemContainer implements ItemCont
 		super(line, direction);
 	}
 
-	@Override
 	public void doCollection(MinecartManiaInventory other) {
 		@SuppressWarnings("unchecked")
 		ArrayList<AbstractItem> rawList = (ArrayList<AbstractItem>) ListUtils.toArrayList(Arrays.asList(getRawItemList()));

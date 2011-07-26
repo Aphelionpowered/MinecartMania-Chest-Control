@@ -97,11 +97,11 @@ public class SignCommands {
 	}
 	
 	private static Location getAdjacentTrack(Block center, BlockFace dir) {
-		if (MinecartUtils.isTrack(center.getFace(dir))) {
-			return center.getFace(dir).getLocation();
+		if (MinecartUtils.isTrack(center.getRelative(dir))) {
+			return center.getRelative(dir).getLocation();
 		}
-		if (center.getFace(dir).getTypeId() == Item.CHEST.getId() && MinecartUtils.isTrack(center.getFace(dir).getFace(dir))) {
-			return center.getFace(dir).getFace(dir).getLocation();
+		if (center.getRelative(dir).getTypeId() == Item.CHEST.getId() && MinecartUtils.isTrack(center.getRelative(dir).getRelative(dir))) {
+			return center.getRelative(dir).getRelative(dir).getLocation();
 		}
 		return null;
 	}

@@ -25,7 +25,6 @@ public class FurnaceSmeltContainer extends GenericItemContainer implements ItemC
 		this.line = smelt;
 	}
 
-	@Override
 	public void doCollection(MinecartManiaInventory withdraw) {
 		for (CompassDirection direction : directions) {
 			AbstractItem[] list = getItemList(direction);

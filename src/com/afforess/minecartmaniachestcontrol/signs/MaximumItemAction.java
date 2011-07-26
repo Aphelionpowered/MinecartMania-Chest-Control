@@ -13,7 +13,6 @@ public class MaximumItemAction implements SignAction{
 		this.items = ItemUtils.getItemStringListToMaterial(sign.getLines());
 	}
 
-	@Override
 	public boolean execute(MinecartManiaMinecart minecart) {
 		if (minecart.isStorageMinecart()) {
 			for (AbstractItem item : items) {
@@ -24,12 +23,10 @@ public class MaximumItemAction implements SignAction{
 		return false;
 	}
 
-	@Override
 	public boolean async() {
 		return true;
 	}
 
-	@Override
 	public boolean valid(Sign sign) {
 		if (sign.getLine(0).toLowerCase().contains("max item")) {
 			sign.addBrackets();
@@ -38,12 +35,10 @@ public class MaximumItemAction implements SignAction{
 		return false;
 	}
 
-	@Override
 	public String getName() {
 		return "maximumitemsign";
 	}
 
-	@Override
 	public String getFriendlyName() {
 		return "Maximum Item Sign";
 	}

@@ -25,7 +25,6 @@ public class FurnaceFuelContainer extends GenericItemContainer implements ItemCo
 		this.line = fuel;
 	}
 
-	@Override
 	public void doCollection(MinecartManiaInventory withdraw) {
 		for (CompassDirection direction : directions) {
 			AbstractItem[] list = getItemList(direction);
