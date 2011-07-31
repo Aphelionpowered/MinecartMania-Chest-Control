@@ -136,7 +136,7 @@ public abstract class ChestStorage {
                             //TODO handling for custom recipies?
                             Item[][] compressable = { 
                                     {Item.IRON_INGOT, Item.GOLD_INGOT, Item.LAPIS_LAZULI, Item.DIAMOND,       Item.CLAY_BALL, Item.SNOW_BALL}, 
-                                    {Item.IRON_BLOCK , Item.GOLD_BLOCK, Item.LAPIS_BLOCK, Item.DIAMOND_BLOCK, Item.CLAY,      Item.SNOW} 
+                                    {Item.IRON_BLOCK , Item.GOLD_BLOCK, Item.LAPIS_BLOCK, Item.DIAMOND_BLOCK, Item.CLAY,      Item.SNOW_BLOCK} 
                             };
                             int n = 0;
                             for (Item m : compressable[0]) {
