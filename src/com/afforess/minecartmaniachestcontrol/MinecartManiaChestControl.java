@@ -1,11 +1,9 @@
 package com.afforess.minecartmaniachestcontrol;
 import org.bukkit.Server;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.event.Event;
+import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import net.minecraft.server.*;
 
 import com.afforess.minecartmaniacore.MinecartManiaCore;
 import com.afforess.minecartmaniacore.config.MinecartManiaConfigurationParser;
