@@ -79,6 +79,7 @@ public class MinecartManiaActionListener extends MinecartManiaListener{
 				findSigns(locations);
 				ItemCollectionManager.createItemContainers((MinecartManiaStorageCart)event.getMinecart(), locations);
 				ChestStorage.doItemCompression((MinecartManiaStorageCart) minecart);
+				ChestStorage.doCrafting((MinecartManiaStorageCart) minecart);
 			}
 			event.setActionTaken(action);
 		}

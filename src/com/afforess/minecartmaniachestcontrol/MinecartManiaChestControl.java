@@ -5,6 +5,8 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import net.minecraft.server.*;
+
 import com.afforess.minecartmaniacore.MinecartManiaCore;
 import com.afforess.minecartmaniacore.config.MinecartManiaConfigurationParser;
 import com.afforess.minecartmaniacore.debug.MinecartManiaLogger;
@@ -21,6 +23,8 @@ public class MinecartManiaChestControl extends JavaPlugin {
 		MinecartManiaConfigurationParser.read(description.getName() + "Configuration.xml", MinecartManiaCore.getDataDirectoryRelativePath(), new ChestControlSettingParser());
 		getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, listener, Priority.High, this);
 		log.info( description.getName() + " version " + description.getVersion() + " is enabled!" );
+		
+		RecipeManager.init();
 	}
 	
 	public void onDisable(){

@@ -1,13 +1,19 @@
 package com.afforess.minecartmaniachestcontrol;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+
+import net.minecraft.server.InventoryCrafting;
+import net.minecraft.server.ShapedRecipes;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 
+import com.afforess.minecartmaniachestcontrol.RecipeManager.RecipeData;
 import com.afforess.minecartmaniacore.world.Item;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
@@ -122,7 +128,55 @@ public abstract class ChestStorage {
                 return 9;
         }
     }
-    
+
+    public static void doCrafting(MinecartManiaStorageCart minecart) {
+        HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
+        for (Block block : blockList) {
+            if (block.getTypeId() == Item.WORKBENCH.getId()) {
+                ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
+                for (Sign sign : signList) {
+                    if (sign.getLine(0).toLowerCase().contains("craft")) {
+                        sign.setLine(0, "[Craft Items]");
+                        // For each line on the sign
+                        for (int i = 1; i < sign.getNumLines(); i++) {
+                            // Get the recipe, if possible
+                            RecipeData recipe = RecipeManager.findRecipe(sign.getLine(i));
+                            if(recipe==null) continue; // Skip if we can't find it.
+                            
+                            boolean outOfIngredients=false;
+                            
+                            // Until we're out of ingredients,
+                            while(!outOfIngredients) {
+                                // Loop through the list of ingredients for this recipe
+                                for(ItemStack stack : recipe.ingredients) {
+                                    // See if we have the needed ingredient
+                                    if(!minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
+                                     // Otherwise, break out of the loop.
+                                        outOfIngredients=true;
+                                        break;
+                                    }
+                                }
+                                
+                                if(outOfIngredients) break;
+                                
+                                if(!minecart.canAddItem(recipe.results)) {
+                                    break;
+                                }
+                                
+                                // Loop through again to remove the items
+                                for(ItemStack stack : recipe.ingredients) {
+                                    minecart.removeItem(stack.getTypeId(),stack.getAmount(),stack.getDurability());
+                                }
+                                // Take it from the cart
+                                minecart.addItem(recipe.results);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public static void doItemCompression(MinecartManiaStorageCart minecart) {
         HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
         for (Block block : blockList) {
