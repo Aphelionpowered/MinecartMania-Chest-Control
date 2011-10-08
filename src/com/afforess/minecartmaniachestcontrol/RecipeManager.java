@@ -131,7 +131,7 @@ public class RecipeManager {
     private static Object getPrivateField(Object object, String field) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
         // Get Recipe contents via reflection
         Class<?> srClass = object.getClass();
-        Field fD = srClass.getField(field);
+        Field fD = srClass.getDeclaredField(field);
         fD.setAccessible(true);
         return fD.get(object);
     }
