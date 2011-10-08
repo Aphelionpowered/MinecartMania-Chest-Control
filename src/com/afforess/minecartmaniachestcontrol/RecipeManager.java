@@ -13,10 +13,7 @@ import net.minecraft.server.ShapelessRecipes;
 
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.entity.Item;
-import org.bukkit.inventory.*;
-
-import com.afforess.minecartmaniachestcontrol.RecipeManager.RecipeData;
+import org.bukkit.inventory.ItemStack;
 
 public class RecipeManager {
     public static class RecipeData {
