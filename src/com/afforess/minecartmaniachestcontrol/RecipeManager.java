@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import net.minecraft.server.CraftingManager;
 import net.minecraft.server.ShapedRecipes;
@@ -20,7 +21,7 @@ public class RecipeManager {
         public List<ItemStack> ingredients = new ArrayList<ItemStack>();
         public ItemStack results=null;
     }
-
+    
     private static Map<Integer,RecipeData> recipes = new HashMap<Integer,RecipeData>();
     
     public static void init() {
@@ -31,17 +32,24 @@ public class RecipeManager {
                 ShapedRecipes recipe = (ShapedRecipes) or;
                 recipeData.results = new CraftItemStack(recipe.b());
                 recipeData.ingredients = extractIngredients(recipe);
-                recipes.put(recipeData.results.getTypeId(),recipeData);
+                
             }
             else if(or instanceof ShapelessRecipes) {
                 ShapelessRecipes recipe = (ShapelessRecipes) or;
                 recipeData.results = new CraftItemStack(recipe.b());
                 recipeData.ingredients = extractIngredients(recipe);
+            }
+            
+            if(recipeData.ingredients!=null) {
                 recipes.put(recipeData.results.getTypeId(),recipeData);
+                Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for "+recipeData.results.getType().name()+":");
+                for(ItemStack ingredient : recipeData.ingredients) {
+                    Logger.getLogger("Minecraft").info(" * "+ingredient.getAmount()+"x "+ingredient.getType().name());
+                }
             }
         }
     }
-
+    
     private static List<ItemStack> extractIngredients(ShapelessRecipes recipe) {
         List<net.minecraft.server.ItemStack> stuff;
         try {
@@ -54,7 +62,6 @@ public class RecipeManager {
         
         Map<net.minecraft.server.ItemStack,Integer> amt = new HashMap<net.minecraft.server.ItemStack,Integer>();
         
-        
         List<ItemStack> ingredients = new ArrayList<ItemStack>();
         for(net.minecraft.server.ItemStack item : stuff) {
             org.bukkit.inventory.ItemStack itemStack = new CraftItemStack(item);
@@ -63,7 +70,7 @@ public class RecipeManager {
         return ingredients;
     }
     
-
+    
     
     private static List<ItemStack> extractIngredients(ShapedRecipes recipe) {
         int sX,sY;
@@ -82,9 +89,11 @@ public class RecipeManager {
         for(int x=0;x<3;x++){
             for(int y=0;y<3;y++) {
                 net.minecraft.server.ItemStack item = getRecipeIngredient(recipe,x,y,true);
-                item.count=1;
-                if(amt.containsKey(item)) {
-                    amt.put(item,amt.get(item)+1);
+                if(item != null) {
+                    item.count=1;
+                    if(amt.containsKey(item)) {
+                        amt.put(item,amt.get(item)+1);
+                    }
                 }
             }
         }
@@ -97,7 +106,7 @@ public class RecipeManager {
         }
         return ingredients;
     }
-
+    
     private static net.minecraft.server.ItemStack getRecipeIngredient(ShapedRecipes recipe, int x, int y, boolean var4) {
         int sX,sY;
         net.minecraft.server.ItemStack[] ingredients;
@@ -121,8 +130,8 @@ public class RecipeManager {
                 ingredient = ingredients[x + y * sX];
             }
         }
-
-       return ingredient;
+        
+        return ingredient;
     }
     
     private static Object getPrivateField(Object object, String field) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
@@ -132,7 +141,7 @@ public class RecipeManager {
         fD.setAccessible(true);
         return fD.get(object);
     }
-
+    
     public static RecipeData findRecipe(String line) {
         for(Integer itemID:recipes.keySet()) {
             if(line.equals(itemID) || line.equals("["+itemID+"]")) 
