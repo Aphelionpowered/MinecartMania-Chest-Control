@@ -145,17 +145,26 @@ public abstract class ChestStorage {
                             RecipeData recipe = RecipeManager.findRecipe(item);
                             
                             if(recipe==null) continue; // Skip if we can't find it.
+                            if(recipe.ingredients == null || recipe.ingredients.size()==0) continue;
                             
                             boolean outOfIngredients=false;
                             
-                            // Until we're out of ingredients,
-                            while(!outOfIngredients) {
+                            int loops = 0;
+                            
+                            System.out.println("RECIPE: "+recipe.results.toString());
+                            // Until we're out of ingredients, or the loop has been executed 64 times.
+                            while(!outOfIngredients && loops<64) {
+
+                                
+                                
+                                loops++;
                                 // Loop through the list of ingredients for this recipe
                                 for(ItemStack stack : recipe.ingredients) {
                                     // See if we have the needed ingredient
                                     if(!minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
                                         // Otherwise, break out of the loop.
                                         outOfIngredients=true;
+                                        System.out.println("OOI: "+stack.toString());
                                         break;
                                     }
                                 }
@@ -163,16 +172,17 @@ public abstract class ChestStorage {
                                 if(outOfIngredients) break;
                                 
                                 if(!minecart.canAddItem(recipe.results)) {
+                                    System.out.println("CAI: "+recipe.results.toString());
+                                    outOfIngredients=true;
                                     break;
                                 }
                                 
-                                // Loop through again to remove the items
+                                // Loop through again to actually remove the items
                                 for(ItemStack stack : recipe.ingredients) {
                                     minecart.removeItem(stack.getTypeId(),stack.getAmount(),stack.getDurability());
                                 }
                                 // Take it from the cart
                                 minecart.addItem(recipe.results);
-                                
                             }
                         }
                     }
