@@ -179,8 +179,8 @@ public abstract class ChestStorage {
                                 
                                 // Loop through again to actually remove the items
                                 for(ItemStack stack : recipe.ingredients) {
-                                    System.out.println("[Craft Items] Removed "+stack.toString()+" from minecart!");
-                                    //minecart.removeItem(stack.getTypeId(),stack.getAmount(),stack.getDurability());
+                                    //System.out.println("[Craft Items] Removed "+stack.toString()+" from minecart!");
+                                    minecart.removeItem(stack.getTypeId(),stack.getAmount(),stack.getDurability());
                                 }
                                 // Take it from the cart
                                 minecart.addItem(recipe.results);
