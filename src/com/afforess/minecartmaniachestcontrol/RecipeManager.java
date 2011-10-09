@@ -73,13 +73,10 @@ public class RecipeManager {
     
     
     private static List<ItemStack> extractIngredients(ShapedRecipes recipe) {
-        int sX,sY;
         net.minecraft.server.ItemStack[] ingredients;
         
         try {
             ingredients = (net.minecraft.server.ItemStack[]) getPrivateField(recipe,"d");
-            sX = (Integer) getPrivateField(recipe,"b");
-            sY=(Integer) getPrivateField(recipe,"c");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -87,18 +84,7 @@ public class RecipeManager {
         }
         
         Map<net.minecraft.server.ItemStack,Integer> amt = new HashMap<net.minecraft.server.ItemStack,Integer>();
-        /*
-        for(int x=0;x<3;x++){
-            for(int y=0;y<3;y++) {
-                net.minecraft.server.ItemStack item = getRecipeIngredient(recipe,x,y,true);
-                if(item != null) {
-                    item.count=1;
-                    if(amt.containsKey(item)) {
-                        amt.put(item,amt.get(item)+1);
-                    }
-                }
-            }
-        }*/
+        
         for(int i=0;i<ingredients.length;i++){
             net.minecraft.server.ItemStack item = ingredients[i];
             if(item != null) {
