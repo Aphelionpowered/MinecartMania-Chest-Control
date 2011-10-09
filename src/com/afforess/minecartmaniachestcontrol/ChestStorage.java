@@ -151,7 +151,7 @@ public abstract class ChestStorage {
                             
                             int loops = 0;
                             
-                            System.out.println("RECIPE: "+recipe.results.toString());
+                            //System.out.println("RECIPE: "+recipe.results.toString());
                             // Until we're out of ingredients, or the loop has been executed 64 times.
                             while(!outOfIngredients && loops<64) {
 
@@ -164,7 +164,7 @@ public abstract class ChestStorage {
                                     if(minecart.amount(Item.getItem(stack))<stack.getAmount()) {
                                         // Otherwise, break out of the loop.
                                         outOfIngredients=true;
-                                        System.out.println("OOI: "+stack.toString());
+                                        //System.out.println("OOI: "+stack.toString());
                                         break;
                                     }
                                 }
@@ -172,17 +172,19 @@ public abstract class ChestStorage {
                                 if(outOfIngredients) break;
                                 
                                 if(!minecart.canAddItem(recipe.results)) {
-                                    System.out.println("CAI: "+recipe.results.toString());
+                                    //System.out.println("CAI: "+recipe.results.toString());
                                     outOfIngredients=true;
                                     break;
                                 }
                                 
                                 // Loop through again to actually remove the items
                                 for(ItemStack stack : recipe.ingredients) {
+                                    System.out.println("[Craft Items] Removed "+stack.toString()+" from minecart!");
                                     minecart.removeItem(stack.getTypeId(),stack.getAmount(),stack.getDurability());
                                 }
                                 // Take it from the cart
                                 minecart.addItem(recipe.results);
+                                System.out.println("[Craft Items] Added "+recipe.results.toString()+" to minecart!");
                             }
                         }
                     }
