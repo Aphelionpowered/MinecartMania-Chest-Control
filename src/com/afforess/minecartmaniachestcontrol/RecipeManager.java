@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import net.minecraft.server.CraftingManager;
@@ -15,13 +16,15 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import com.afforess.minecartmaniacore.world.AbstractItem;
+
 public class RecipeManager {
     public static class RecipeData {
         public List<ItemStack> ingredients = new ArrayList<ItemStack>();
         public ItemStack results=null;
     }
     
-    private static Map<Integer,RecipeData> recipes = new HashMap<Integer,RecipeData>();
+    private static List<RecipeData> recipes = new ArrayList<RecipeData>();
     
     public static void init() {
         recipes.clear();
@@ -40,7 +43,7 @@ public class RecipeManager {
             }
             
             if(recipeData.ingredients!=null && recipeData.ingredients.size()>0) {
-                recipes.put(recipeData.results.getTypeId(),recipeData);
+                recipes.add(recipeData);
                 Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for "+recipeData.results.getType().name()+" ("+recipeData.results.getDurability()+"):");
                 for(ItemStack ingredient : recipeData.ingredients) {
                     Logger.getLogger("Minecraft").info(" * "+ingredient.getAmount()+"x "+ingredient.getType().name()+" ("+ingredient.getDurability()+")");
@@ -154,13 +157,18 @@ public class RecipeManager {
         return fD.get(object);
     }
     
-    public static RecipeData findRecipe(String line) {
-        for(Integer itemID:recipes.keySet()) {
-            if(line.equals(itemID) || line.equals("["+itemID+"]")) 
-                return recipes.get(itemID);
-            Material mat = Material.getMaterial(line);
-            if(mat!=null)
-                return recipes.get(mat.getId());
+    public static RecipeData findRecipe(AbstractItem desiredOutput) {
+        for(RecipeData recipe:recipes) {
+            if(desiredOutput.getId()==recipe.results.getTypeId()) {
+                // Okay, correct type.  Now, let's see if data matters.
+                if(!desiredOutput.hasData()) {
+                    // Nope!  We've found the recipe we're looking for.
+                    return recipe;
+                } else {
+                    if(desiredOutput.getData() == recipe.results.getDurability())
+                        return recipe;
+                }
+            }
         }
         return null;
     }

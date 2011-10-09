@@ -14,12 +14,14 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 
 import com.afforess.minecartmaniachestcontrol.RecipeManager.RecipeData;
+import com.afforess.minecartmaniacore.world.AbstractItem;
 import com.afforess.minecartmaniacore.world.Item;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaStorageCart;
 import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 import com.afforess.minecartmaniacore.signs.Sign;
+import com.afforess.minecartmaniacore.utils.ItemUtils;
 import com.afforess.minecartmaniacore.utils.MinecartUtils;
 import com.afforess.minecartmaniacore.utils.SignUtils;
 
@@ -135,12 +137,18 @@ public abstract class ChestStorage {
             if (block.getTypeId() == Item.WORKBENCH.getId()) {
                 ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
                 for (Sign sign : signList) {
-                    if (sign.getLine(0).toLowerCase().contains("craft")) {
+                    if (sign.getLine(0).toLowerCase().contains("craft items")) {
                         sign.setLine(0, "[Craft Items]");
                         // For each line on the sign
+                        String itemListString = "";
                         for (int i = 1; i < sign.getNumLines(); i++) {
+                            if(i>1) itemListString+=":";
+                            itemListString+=sign.getLine(i);
+                        }
+                        for(AbstractItem item:ItemUtils.getItemStringListToMaterial(itemListString.split(":"))) {
                             // Get the recipe, if possible
-                            RecipeData recipe = RecipeManager.findRecipe(sign.getLine(i));
+                            RecipeData recipe = RecipeManager.findRecipe(item);
+                            
                             if(recipe==null) continue; // Skip if we can't find it.
                             
                             boolean outOfIngredients=false;
@@ -151,7 +159,7 @@ public abstract class ChestStorage {
                                 for(ItemStack stack : recipe.ingredients) {
                                     // See if we have the needed ingredient
                                     if(!minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
-                                     // Otherwise, break out of the loop.
+                                        // Otherwise, break out of the loop.
                                         outOfIngredients=true;
                                         break;
                                     }
@@ -169,6 +177,7 @@ public abstract class ChestStorage {
                                 }
                                 // Take it from the cart
                                 minecart.addItem(recipe.results);
+                                
                             }
                         }
                     }
