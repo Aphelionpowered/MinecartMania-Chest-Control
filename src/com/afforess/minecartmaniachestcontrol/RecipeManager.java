@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import net.minecraft.server.CraftingManager;
@@ -50,6 +49,7 @@ public class RecipeManager {
         }
     }
     
+    @SuppressWarnings("unchecked")
     private static List<ItemStack> extractIngredients(ShapelessRecipes recipe) {
         List<net.minecraft.server.ItemStack> stuff;
         try {
@@ -64,8 +64,19 @@ public class RecipeManager {
         
         List<ItemStack> ingredients = new ArrayList<ItemStack>();
         for(net.minecraft.server.ItemStack item : stuff) {
-            org.bukkit.inventory.ItemStack itemStack = new CraftItemStack(item);
-            ingredients.add(itemStack);
+            boolean found = false;
+            for(int j = 0;j<ingredients.size();j++) {
+                ItemStack b_item = ingredients.get(j);
+                if(b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
+                    b_item.setAmount(b_item.getAmount()+1);
+                    ingredients.set(j, b_item);
+                    found=true;
+                    break;
+                }
+            }
+            if(!found) {
+                ingredients.add(new CraftItemStack(item));
+            }
         }
         return ingredients;
     }
@@ -83,23 +94,27 @@ public class RecipeManager {
             return null;
         }
         
-        Map<net.minecraft.server.ItemStack,Integer> amt = new HashMap<net.minecraft.server.ItemStack,Integer>();
+
+        
+        List<ItemStack> r = new ArrayList<ItemStack>();
         
         for(int i=0;i<ingredients.length;i++){
             net.minecraft.server.ItemStack item = ingredients[i];
             if(item != null) {
-                item.count=1;
-                if(amt.containsKey(item)) {
-                    amt.put(item,amt.get(item)+1);
+                boolean found = false;
+                for(int j = 0;j<r.size();j++) {
+                    ItemStack b_item = r.get(j);
+                    if(b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
+                        b_item.setAmount(b_item.getAmount()+1);
+                        r.set(j, b_item);
+                        found=true;
+                        break;
+                    }
+                }
+                if(!found) {
+                    r.add(new CraftItemStack(item));
                 }
             }
-        }
-        
-        List<ItemStack> r = new ArrayList<ItemStack>();
-        for(Entry<net.minecraft.server.ItemStack, Integer> item : amt.entrySet()) {
-            org.bukkit.inventory.ItemStack itemStack = new CraftItemStack((net.minecraft.server.ItemStack)item.getKey());
-            itemStack.setAmount(item.getValue());
-            r.add(itemStack);
         }
         return r;
     }
