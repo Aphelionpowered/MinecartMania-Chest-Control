@@ -40,11 +40,11 @@ public class RecipeManager {
                 recipeData.ingredients = extractIngredients(recipe);
             }
             
-            if(recipeData.ingredients!=null) {
+            if(recipeData.ingredients!=null && recipeData.ingredients.size()>0) {
                 recipes.put(recipeData.results.getTypeId(),recipeData);
-                Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for "+recipeData.results.getType().name()+":");
+                Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for "+recipeData.results.getType().name()+" ("+recipeData.results.getDurability()+"):");
                 for(ItemStack ingredient : recipeData.ingredients) {
-                    Logger.getLogger("Minecraft").info(" * "+ingredient.getAmount()+"x "+ingredient.getType().name());
+                    Logger.getLogger("Minecraft").info(" * "+ingredient.getAmount()+"x "+ingredient.getType().name()+" ("+ingredient.getDurability()+")");
                 }
             }
         }
@@ -74,8 +74,10 @@ public class RecipeManager {
     
     private static List<ItemStack> extractIngredients(ShapedRecipes recipe) {
         int sX,sY;
+        net.minecraft.server.ItemStack[] ingredients;
         
         try {
+            ingredients = (net.minecraft.server.ItemStack[]) getPrivateField(recipe,"d");
             sX = (Integer) getPrivateField(recipe,"b");
             sY=(Integer) getPrivateField(recipe,"c");
         } catch (Exception e) {
@@ -85,7 +87,7 @@ public class RecipeManager {
         }
         
         Map<net.minecraft.server.ItemStack,Integer> amt = new HashMap<net.minecraft.server.ItemStack,Integer>();
-        
+        /*
         for(int x=0;x<3;x++){
             for(int y=0;y<3;y++) {
                 net.minecraft.server.ItemStack item = getRecipeIngredient(recipe,x,y,true);
@@ -96,15 +98,24 @@ public class RecipeManager {
                     }
                 }
             }
+        }*/
+        for(int i=0;i<ingredients.length;i++){
+            net.minecraft.server.ItemStack item = ingredients[i];
+            if(item != null) {
+                item.count=1;
+                if(amt.containsKey(item)) {
+                    amt.put(item,amt.get(item)+1);
+                }
+            }
         }
         
-        List<ItemStack> ingredients = new ArrayList<ItemStack>();
+        List<ItemStack> r = new ArrayList<ItemStack>();
         for(Entry<net.minecraft.server.ItemStack, Integer> item : amt.entrySet()) {
             org.bukkit.inventory.ItemStack itemStack = new CraftItemStack((net.minecraft.server.ItemStack)item.getKey());
             itemStack.setAmount(item.getValue());
-            ingredients.add(itemStack);
+            r.add(itemStack);
         }
-        return ingredients;
+        return r;
     }
     
     private static net.minecraft.server.ItemStack getRecipeIngredient(ShapedRecipes recipe, int x, int y, boolean var4) {
