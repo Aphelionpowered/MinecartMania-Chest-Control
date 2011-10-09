@@ -2,17 +2,13 @@ package com.afforess.minecartmaniachestcontrol;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Logger;
 
 import net.minecraft.server.CraftingManager;
 import net.minecraft.server.ShapedRecipes;
 import net.minecraft.server.ShapelessRecipes;
 
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -56,14 +52,12 @@ public class RecipeManager {
     private static List<ItemStack> extractIngredients(ShapelessRecipes recipe) {
         List<net.minecraft.server.ItemStack> stuff;
         try {
-            stuff = new ArrayList<net.minecraft.server.ItemStack>((List) getPrivateField(recipe,"b"));
+            stuff = new ArrayList<net.minecraft.server.ItemStack>((List<net.minecraft.server.ItemStack>) getPrivateField(recipe,"b"));
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
-        
-        Map<net.minecraft.server.ItemStack,Integer> amt = new HashMap<net.minecraft.server.ItemStack,Integer>();
         
         List<ItemStack> ingredients = new ArrayList<ItemStack>();
         for(net.minecraft.server.ItemStack item : stuff) {
@@ -120,33 +114,6 @@ public class RecipeManager {
             }
         }
         return r;
-    }
-    
-    private static net.minecraft.server.ItemStack getRecipeIngredient(ShapedRecipes recipe, int x, int y, boolean var4) {
-        int sX,sY;
-        net.minecraft.server.ItemStack[] ingredients;
-        
-        try {
-            ingredients = (net.minecraft.server.ItemStack[]) getPrivateField(recipe,"d");
-            sX = (Integer) getPrivateField(recipe,"b");
-            sY=(Integer) getPrivateField(recipe,"c");
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-        
-        // Get useful stuff out of the recipe
-        net.minecraft.server.ItemStack ingredient = null;
-        if(x >= 0 && y >= 0 && x < sX && y < sY) {
-            if(var4) {
-                ingredient = ingredients[sX - x - 1 + y * sX];
-            } else {
-                ingredient = ingredients[x + y * sX];
-            }
-        }
-        
-        return ingredient;
     }
     
     private static Object getPrivateField(Object object, String field) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {

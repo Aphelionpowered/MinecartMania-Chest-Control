@@ -1,12 +1,7 @@
 package com.afforess.minecartmaniachestcontrol;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-
-import net.minecraft.server.InventoryCrafting;
-import net.minecraft.server.ShapedRecipes;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -14,16 +9,16 @@ import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 
 import com.afforess.minecartmaniachestcontrol.RecipeManager.RecipeData;
-import com.afforess.minecartmaniacore.world.AbstractItem;
-import com.afforess.minecartmaniacore.world.Item;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaStorageCart;
-import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 import com.afforess.minecartmaniacore.signs.Sign;
 import com.afforess.minecartmaniacore.utils.ItemUtils;
 import com.afforess.minecartmaniacore.utils.MinecartUtils;
 import com.afforess.minecartmaniacore.utils.SignUtils;
+import com.afforess.minecartmaniacore.world.AbstractItem;
+import com.afforess.minecartmaniacore.world.Item;
+import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 
 public abstract class ChestStorage {
     
