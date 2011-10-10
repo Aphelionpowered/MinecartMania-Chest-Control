@@ -124,9 +124,8 @@ public abstract class ChestStorage {
     }
     
 
-    
     public static void debug(MinecartManiaStorageCart minecart, String msg) {
-        if(minecart.getDataValue("Debug")!=null)
+        if (minecart.getDataValue("MMDebug") != null)
             System.out.println(msg);
     }
     
