@@ -123,7 +123,6 @@ public abstract class ChestStorage {
         }
     }
     
-
     public static void debug(MinecartManiaStorageCart minecart, String msg) {
         if (minecart.getDataValue("MMDebug") != null)
             System.out.println(msg);
@@ -159,7 +158,7 @@ public abstract class ChestStorage {
                             
                             List<ItemStack> fixedIngredients = new ArrayList<ItemStack>();
                             
-                            debug(minecart,"RECIPE: "+recipe.results.toString());
+                            debug(minecart, "RECIPE: " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")");
                             // Until we're out of ingredients, or the loop has been executed 64 times.
                             while (!outOfIngredients && loops < 64) {
                                 loops++;
@@ -179,9 +178,11 @@ public abstract class ChestStorage {
                                                 continue;
                                             }
                                             // See if we have the needed ingredient
-                                            if (minecart.amount(sitem) < stack.getAmount()) {
+                                            int num = minecart.amount(sitem);
+                                            if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
                                                 continue;
                                             } else {
+                                                debug(minecart, "Cart has " + num + " " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")!");
                                                 found = true;
                                                 break;
                                             }
@@ -190,17 +191,17 @@ public abstract class ChestStorage {
                                         // if it does
                                         sitem = Item.getItem(stack);
                                         if (sitem == null) {
-                                            System.out.println("Could not find item for " + stack.toString()+" (d: "+stack.getDurability()+")");
+                                            System.out.println("Could not find item for " + stack.toString() + " (d: " + stack.getDurability() + ")!");
                                             break;
                                         }
                                         // See if we have the needed ingredient
-                                        if (minecart.amount(sitem) >= stack.getAmount()) {
+                                        if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
                                             found = true;
                                         }
                                     }
                                     if (!found) {
                                         outOfIngredients = true;
-                                        debug(minecart,"OOI: "+stack.toString());
+                                        debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
                                         break;
                                     } else {
                                         fixedIngredients.add(stack);
@@ -211,19 +212,19 @@ public abstract class ChestStorage {
                                     break;
                                 
                                 if (!minecart.canAddItem(recipe.results)) {
-                                    debug(minecart,"CAI: "+recipe.results.toString());
+                                    debug(minecart, "CAI: " + recipe.results.toString());
                                     outOfIngredients = true;
                                     break;
                                 }
                                 
                                 // Loop through again to actually remove the items
                                 for (ItemStack stack : fixedIngredients) {
-                                    debug(minecart,"[Craft Items] Removed "+stack.toString()+" from minecart!");
+                                    debug(minecart, "[Craft Items] Removed " + stack.toString() + " (d: " + stack.getDurability() + ") from minecart!");
                                     minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability());
                                 }
                                 // Take it from the cart
                                 minecart.addItem(recipe.results);
-                                debug(minecart,"[Craft Items] Added "+recipe.results.toString()+" to minecart!");
+                                debug(minecart, "[Craft Items] Added " + recipe.results.toString() + " to minecart!");
                             }
                         }
                     }
