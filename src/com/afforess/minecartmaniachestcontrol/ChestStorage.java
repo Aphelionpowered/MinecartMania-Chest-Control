@@ -184,7 +184,7 @@ public abstract class ChestStorage {
                                         // if it does
                                         sitem = Item.getItem(stack);
                                         if (sitem == null) {
-                                            System.out.println("Could not find item for " + stack.toString());
+                                            System.out.println("Could not find item for " + stack.toString()+" (d: "+stack.getDurability()+")");
                                             break;
                                         }
                                         // See if we have the needed ingredient
