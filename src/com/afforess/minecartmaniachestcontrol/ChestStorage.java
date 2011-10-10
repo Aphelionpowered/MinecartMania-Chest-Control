@@ -161,6 +161,8 @@ public abstract class ChestStorage {
                             debug(minecart, "RECIPE: " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")");
                             // Until we're out of ingredients, or the loop has been executed 64 times.
                             while (!outOfIngredients && loops < 64) {
+                                fixedIngredients.clear();
+                                
                                 loops++;
                                 // Loop through the list of ingredients for this recipe
                                 for (ItemStack stack : recipe.ingredients) {
