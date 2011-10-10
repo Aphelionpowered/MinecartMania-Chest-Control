@@ -2,6 +2,7 @@ package com.afforess.minecartmaniachestcontrol;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -150,24 +151,53 @@ public abstract class ChestStorage {
                             
                             int loops = 0;
                             
+                            List<ItemStack> fixedIngredients = new ArrayList<ItemStack>();
+                            
                             //System.out.println("RECIPE: "+recipe.results.toString());
                             // Until we're out of ingredients, or the loop has been executed 64 times.
                             while (!outOfIngredients && loops < 64) {
                                 loops++;
                                 // Loop through the list of ingredients for this recipe
                                 for (ItemStack stack : recipe.ingredients) {
-                                    // See if we have the needed ingredient
-                                    Item sitem = Item.getItem(stack);
-                                    if (sitem == null) {
-                                        System.out.println("Could not find item for " + stack.toString());
-                                        outOfIngredients = true;
-                                        break;
+                                    Item sitem = null;
+                                    boolean found = false;
+                                    if (stack.getDurability() == -1) {
+                                        // if this stack has no subtype preference,
+                                        for (int s = 0; s < 16; s++) {
+                                            // loop through subtypes
+                                            
+                                            stack.setDurability((short) s);
+                                            
+                                            sitem = Item.getItem(stack);
+                                            if (sitem == null) {
+                                                continue;
+                                            }
+                                            // See if we have the needed ingredient
+                                            if (minecart.amount(sitem) < stack.getAmount()) {
+                                                continue;
+                                            } else {
+                                                found = true;
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        // if it does
+                                        sitem = Item.getItem(stack);
+                                        if (sitem == null) {
+                                            System.out.println("Could not find item for " + stack.toString());
+                                            break;
+                                        }
+                                        // See if we have the needed ingredient
+                                        if (minecart.amount(sitem) >= stack.getAmount()) {
+                                            found = true;
+                                        }
                                     }
-                                    if (minecart.amount(sitem) < stack.getAmount()) {
-                                        // Otherwise, break out of the loop.
+                                    if (!found) {
                                         outOfIngredients = true;
                                         //System.out.println("OOI: "+stack.toString());
                                         break;
+                                    } else {
+                                        fixedIngredients.add(stack);
                                     }
                                 }
                                 
@@ -181,7 +211,7 @@ public abstract class ChestStorage {
                                 }
                                 
                                 // Loop through again to actually remove the items
-                                for (ItemStack stack : recipe.ingredients) {
+                                for (ItemStack stack : fixedIngredients) {
                                     //System.out.println("[Craft Items] Removed "+stack.toString()+" from minecart!");
                                     minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability());
                                 }
