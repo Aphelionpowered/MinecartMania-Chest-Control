@@ -199,6 +199,8 @@ public abstract class ChestStorage {
                                         // See if we have the needed ingredient
                                         if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
                                             found = true;
+                                        } else {
+                                            break;
                                         }
                                     }
                                     if (!found) {
