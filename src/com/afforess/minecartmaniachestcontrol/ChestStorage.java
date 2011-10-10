@@ -161,7 +161,13 @@ public abstract class ChestStorage {
                                 // Loop through the list of ingredients for this recipe
                                 for(ItemStack stack : recipe.ingredients) {
                                     // See if we have the needed ingredient
-                                    if(minecart.amount(Item.getItem(stack))<stack.getAmount()) {
+                                    Item sitem = Item.getItem(stack);
+                                    if(sitem==null) {
+                                        System.out.println("Could not find item for "+stack.toString());
+                                        outOfIngredients=true;
+                                        break;
+                                    }
+                                    if(minecart.amount(sitem)<stack.getAmount()) {
                                         // Otherwise, break out of the loop.
                                         outOfIngredients=true;
                                         //System.out.println("OOI: "+stack.toString());
