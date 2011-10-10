@@ -196,7 +196,7 @@ public abstract class ChestStorage {
                                             System.out.println("Could not find item for " + stack.toString() + " (d: " + stack.getDurability() + ")!");
                                             break;
                                         }
-                                        // See if we have the needed ingredient
+                                        // See if we have the needed ingredients
                                         if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
                                             found = true;
                                         } else {
@@ -208,7 +208,19 @@ public abstract class ChestStorage {
                                         debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
                                         break;
                                     } else {
+                                        //debug(minecart, "Ingredient found: " + stack.toString() + " (d: " + stack.getDurability() + ")");
                                         fixedIngredients.add(stack);
+                                    }
+                                }
+                                
+                                // Double-check
+                                debug(minecart, "Recipe for " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")");
+                                for (ItemStack stack : fixedIngredients) {
+                                    if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
+                                        debug(minecart, " + " + stack.toString() + " (d: " + stack.getDurability() + ")");
+                                    } else {
+                                        debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
+                                        return;
                                     }
                                 }
                                 
