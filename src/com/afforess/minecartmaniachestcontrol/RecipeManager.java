@@ -79,6 +79,12 @@ public class RecipeManager {
                 ingredients.add(is);
             }
         }
+        for (int j = 0; j < ingredients.size(); j++) {
+            ItemStack citem = ingredients.get(j);
+            if (citem.getAmount() > 9)
+                citem.setAmount(9);
+            ingredients.set(j, citem);
+        }
         return ingredients;
     }
     
@@ -117,6 +123,12 @@ public class RecipeManager {
                     r.add(is);
                 }
             }
+        }
+        for (int j = 0; j < r.size(); j++) {
+            ItemStack citem = r.get(j);
+            if (citem.getAmount() > 9)
+                citem.setAmount(9);
+            r.set(j, citem);
         }
         return r;
     }
