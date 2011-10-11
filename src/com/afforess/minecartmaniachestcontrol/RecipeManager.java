@@ -63,7 +63,7 @@ public class RecipeManager {
             boolean found = false;
             for (int j = 0; j < ingredients.size(); j++) {
                 ItemStack b_item = ingredients.get(j);
-                if (b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
+                if (b_item.getTypeId() == item.id && b_item.getDurability() == item.getData()) {
                     b_item.setAmount(b_item.getAmount() + 1);
                     if (b_item.getAmount() > 9)
                         b_item.setAmount(9);
@@ -107,7 +107,7 @@ public class RecipeManager {
                 boolean found = false;
                 for (int j = 0; j < r.size(); j++) {
                     ItemStack b_item = r.get(j);
-                    if (b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
+                    if (b_item.getTypeId() == item.id && b_item.getDurability() == item.getData()) {
                         b_item.setAmount(b_item.getAmount() + 1);
                         if (b_item.getAmount() > 9)
                             b_item.setAmount(9);
