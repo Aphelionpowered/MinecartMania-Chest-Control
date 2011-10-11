@@ -184,7 +184,7 @@ public abstract class ChestStorage {
                                             }
                                             // See if we have the needed ingredient
                                             int num = minecart.amount(sitem);
-                                            if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
+                                            if (minecart.amount(sitem) < stack.getAmount()) {
                                                 continue;
                                             } else {
                                                 debug(minecart, "Cart has " + num + " " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")!");
@@ -206,7 +206,7 @@ public abstract class ChestStorage {
                                         }
                                         
                                         // See if we have the needed ingredients
-                                        if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
+                                        if (minecart.amount(sitem) >= stack.getAmount()) {
                                             found = true;
                                         } else {
                                             debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
