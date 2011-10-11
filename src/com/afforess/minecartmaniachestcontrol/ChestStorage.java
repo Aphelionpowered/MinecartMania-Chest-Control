@@ -236,7 +236,9 @@ public abstract class ChestStorage {
                                 // Loop through again to actually remove the items
                                 for (ItemStack stack : fixedIngredients) {
                                     debug(minecart, "[Craft Items] Removed " + stack.toString() + " (d: " + stack.getDurability() + ") from minecart!");
-                                    minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability());
+                                    if(!minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
+                                        return;
+                                    }
                                 }
                                 // Take it from the cart
                                 minecart.addItem(recipe.results);
