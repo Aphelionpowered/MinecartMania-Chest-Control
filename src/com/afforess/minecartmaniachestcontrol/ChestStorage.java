@@ -171,7 +171,7 @@ public abstract class ChestStorage {
                                     
                                     ArrayList<Item> aitem = Item.getItem(stack.getTypeId());
                                     
-                                    if (stack.getDurability() == -1 && aitem.size()>0) {
+                                    if (stack.getDurability() == (short)-1 && aitem.size()>1) {
                                         // if this stack has no subtype preference,
                                         for (int s = 0; s < 16; s++) {
                                             // loop through subtypes
@@ -239,9 +239,7 @@ public abstract class ChestStorage {
                                 // Loop through again to actually remove the items
                                 for (ItemStack stack : fixedIngredients) {
                                     debug(minecart, "[Craft Items] Removed " + stack.toString() + " (d: " + stack.getDurability() + ") from minecart!");
-                                    if(!minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
-                                        return;
-                                    }
+                                    minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability());
                                 }
                                 // Take it from the cart
                                 minecart.addItem(recipe.results);
