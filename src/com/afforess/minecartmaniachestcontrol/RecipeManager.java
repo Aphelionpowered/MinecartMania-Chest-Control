@@ -73,7 +73,10 @@ public class RecipeManager {
                 }
             }
             if (!found) {
-                ingredients.add(new CraftItemStack(item));
+                ItemStack is = new CraftItemStack(item);
+                if (is.getAmount() > 9)
+                    is.setAmount(9);
+                ingredients.add(is);
             }
         }
         return ingredients;
