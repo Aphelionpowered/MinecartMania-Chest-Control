@@ -17,32 +17,31 @@ import com.afforess.minecartmaniacore.world.AbstractItem;
 public class RecipeManager {
     public static class RecipeData {
         public List<ItemStack> ingredients = new ArrayList<ItemStack>();
-        public ItemStack results=null;
+        public ItemStack results = null;
     }
     
     private static List<RecipeData> recipes = new ArrayList<RecipeData>();
     
     public static void init() {
         recipes.clear();
-        for(Object or : CraftingManager.getInstance().b()) {
+        for (Object or : CraftingManager.getInstance().b()) {
             RecipeData recipeData = new RecipeData();
-            if(or instanceof ShapedRecipes) {
+            if (or instanceof ShapedRecipes) {
                 ShapedRecipes recipe = (ShapedRecipes) or;
                 recipeData.results = new CraftItemStack(recipe.b());
                 recipeData.ingredients = extractIngredients(recipe);
                 
-            }
-            else if(or instanceof ShapelessRecipes) {
+            } else if (or instanceof ShapelessRecipes) {
                 ShapelessRecipes recipe = (ShapelessRecipes) or;
                 recipeData.results = new CraftItemStack(recipe.b());
                 recipeData.ingredients = extractIngredients(recipe);
             }
             
-            if(recipeData.ingredients!=null && recipeData.ingredients.size()>0) {
+            if (recipeData.ingredients != null && recipeData.ingredients.size() > 0) {
                 recipes.add(recipeData);
-                Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for "+recipeData.results.getType().name()+" ("+recipeData.results.getDurability()+"):");
-                for(ItemStack ingredient : recipeData.ingredients) {
-                    Logger.getLogger("Minecraft").info(" * "+ingredient.getAmount()+"x "+ingredient.getType().name()+" ("+ingredient.getDurability()+")");
+                Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
+                for (ItemStack ingredient : recipeData.ingredients) {
+                    Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
                 }
             }
         }
@@ -52,7 +51,7 @@ public class RecipeManager {
     private static List<ItemStack> extractIngredients(ShapelessRecipes recipe) {
         List<net.minecraft.server.ItemStack> stuff;
         try {
-            stuff = new ArrayList<net.minecraft.server.ItemStack>((List<net.minecraft.server.ItemStack>) getPrivateField(recipe,"b"));
+            stuff = new ArrayList<net.minecraft.server.ItemStack>((List<net.minecraft.server.ItemStack>) getPrivateField(recipe, "b"));
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -60,55 +59,53 @@ public class RecipeManager {
         }
         
         List<ItemStack> ingredients = new ArrayList<ItemStack>();
-        for(net.minecraft.server.ItemStack item : stuff) {
+        for (net.minecraft.server.ItemStack item : stuff) {
             boolean found = false;
-            for(int j = 0;j<ingredients.size();j++) {
+            for (int j = 0; j < ingredients.size(); j++) {
                 ItemStack b_item = ingredients.get(j);
-                if(b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
-                    b_item.setAmount(b_item.getAmount()+1);
+                if (b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
+                    b_item.setAmount(b_item.getAmount() + 1);
+                    if (b_item.getAmount() > 9)
+                        b_item.setAmount(9);
                     ingredients.set(j, b_item);
-                    found=true;
+                    found = true;
                     break;
                 }
             }
-            if(!found) {
+            if (!found) {
                 ingredients.add(new CraftItemStack(item));
             }
         }
         return ingredients;
     }
     
-    
-    
     private static List<ItemStack> extractIngredients(ShapedRecipes recipe) {
         net.minecraft.server.ItemStack[] ingredients;
         
         try {
-            ingredients = (net.minecraft.server.ItemStack[]) getPrivateField(recipe,"d");
+            ingredients = (net.minecraft.server.ItemStack[]) getPrivateField(recipe, "d");
         } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
             return null;
         }
         
-
-        
         List<ItemStack> r = new ArrayList<ItemStack>();
         
-        for(int i=0;i<ingredients.length;i++){
+        for (int i = 0; i < ingredients.length; i++) {
             net.minecraft.server.ItemStack item = ingredients[i];
-            if(item != null) {
+            if (item != null) {
                 boolean found = false;
-                for(int j = 0;j<r.size();j++) {
+                for (int j = 0; j < r.size(); j++) {
                     ItemStack b_item = r.get(j);
-                    if(b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
-                        b_item.setAmount(b_item.getAmount()+1);
+                    if (b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
+                        b_item.setAmount(b_item.getAmount() + 1);
                         r.set(j, b_item);
-                        found=true;
+                        found = true;
                         break;
                     }
                 }
-                if(!found) {
+                if (!found) {
                     r.add(new CraftItemStack(item));
                 }
             }
@@ -116,7 +113,9 @@ public class RecipeManager {
         return r;
     }
     
-    private static Object getPrivateField(Object object, String field) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    private static Object getPrivateField(Object object, String field)
+            throws SecurityException, NoSuchFieldException,
+            IllegalArgumentException, IllegalAccessException {
         // Get Recipe contents via reflection
         Class<?> srClass = object.getClass();
         Field fD = srClass.getDeclaredField(field);
@@ -125,14 +124,14 @@ public class RecipeManager {
     }
     
     public static RecipeData findRecipe(AbstractItem desiredOutput) {
-        for(RecipeData recipe:recipes) {
-            if(desiredOutput.getId()==recipe.results.getTypeId()) {
+        for (RecipeData recipe : recipes) {
+            if (desiredOutput.getId() == recipe.results.getTypeId()) {
                 // Okay, correct type.  Now, let's see if data matters.
-                if(!desiredOutput.hasData()) {
+                if (!desiredOutput.hasData()) {
                     // Nope!  We've found the recipe we're looking for.
                     return recipe;
                 } else {
-                    if(desiredOutput.getData() == recipe.results.getDurability())
+                    if (desiredOutput.getData() == recipe.results.getDurability())
                         return recipe;
                 }
             }
