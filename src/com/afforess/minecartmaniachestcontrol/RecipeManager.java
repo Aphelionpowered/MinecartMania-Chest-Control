@@ -103,13 +103,18 @@ public class RecipeManager {
                     ItemStack b_item = r.get(j);
                     if (b_item.getTypeId() == item.id && b_item.getDurability() == item.damage) {
                         b_item.setAmount(b_item.getAmount() + 1);
+                        if (b_item.getAmount() > 9)
+                            b_item.setAmount(9);
                         r.set(j, b_item);
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
-                    r.add(new CraftItemStack(item));
+                    ItemStack is = new CraftItemStack(item);
+                    if (is.getAmount() > 9)
+                        is.setAmount(9);
+                    r.add(is);
                 }
             }
         }
