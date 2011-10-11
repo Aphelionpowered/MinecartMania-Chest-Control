@@ -193,12 +193,17 @@ public abstract class ChestStorage {
                                             }
                                         }
                                     } else {
+                                        if(stack.getDurability()==-1) {
+                                            stack.setDurability((short) 0);
+                                        }
+                                        
                                         // if it does
                                         sitem = Item.getItem(stack);
                                         if (sitem == null) {
                                             System.out.println("Could not find item for " + stack.toString() + " (d: " + stack.getDurability() + ")!");
                                             break;
                                         }
+                                        
                                         // See if we have the needed ingredients
                                         if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
                                             found = true;
