@@ -168,7 +168,10 @@ public abstract class ChestStorage {
                                 for (ItemStack stack : recipe.ingredients) {
                                     Item sitem = null;
                                     boolean found = false;
-                                    if (stack.getDurability() == -1) {
+                                    
+                                    ArrayList<Item> aitem = Item.getItem(stack.getTypeId());
+                                    
+                                    if (stack.getDurability() == -1 && aitem.size()>0) {
                                         // if this stack has no subtype preference,
                                         for (int s = 0; s < 16; s++) {
                                             // loop through subtypes
