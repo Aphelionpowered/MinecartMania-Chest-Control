@@ -171,7 +171,7 @@ public abstract class ChestStorage {
                                     
                                     ArrayList<Item> aitem = Item.getItem(stack.getTypeId());
                                     
-                                    if (stack.getDurability() == (short)-1 && aitem.size()>1) {
+                                    if (stack.getDurability() == (short) -1 && aitem.size() > 1) {
                                         // if this stack has no subtype preference,
                                         for (int s = 0; s < 16; s++) {
                                             // loop through subtypes
@@ -193,7 +193,7 @@ public abstract class ChestStorage {
                                             }
                                         }
                                     } else {
-                                        if(stack.getDurability()==-1) {
+                                        if (stack.getDurability() == -1) {
                                             stack.setDurability((short) 0);
                                         }
                                         
@@ -201,6 +201,7 @@ public abstract class ChestStorage {
                                         sitem = Item.getItem(stack);
                                         if (sitem == null) {
                                             System.out.println("Could not find item for " + stack.toString() + " (d: " + stack.getDurability() + ")!");
+                                            outOfIngredients = true;
                                             break;
                                         }
                                         
@@ -208,6 +209,8 @@ public abstract class ChestStorage {
                                         if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
                                             found = true;
                                         } else {
+                                            debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
+                                            outOfIngredients = true;
                                             break;
                                         }
                                     }
@@ -221,6 +224,9 @@ public abstract class ChestStorage {
                                     }
                                 }
                                 
+                                if (outOfIngredients)
+                                    break;
+                                
                                 // Double-check
                                 debug(minecart, "Recipe for " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")");
                                 for (ItemStack stack : fixedIngredients) {
@@ -228,7 +234,8 @@ public abstract class ChestStorage {
                                         debug(minecart, " + " + stack.toString() + " (d: " + stack.getDurability() + ")");
                                     } else {
                                         debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
-                                        return;
+                                        outOfIngredients = true;
+                                        break;
                                     }
                                 }
                                 
