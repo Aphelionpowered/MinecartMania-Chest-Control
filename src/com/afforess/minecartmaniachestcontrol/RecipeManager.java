@@ -3,7 +3,6 @@ package com.afforess.minecartmaniachestcontrol;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import net.minecraft.server.CraftingManager;
 import net.minecraft.server.ShapedRecipes;
@@ -44,9 +43,9 @@ public class RecipeManager {
             if (recipeData.ingredients != null && recipeData.ingredients.size() > 0) {
                 recipes.add(recipeData);
                 //Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
-                for (ItemStack ingredient : recipeData.ingredients) {
-                    //Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
-                }
+                //for (ItemStack ingredient : recipeData.ingredients) {
+                //    Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
+                //}
             }
         }
     }
