@@ -24,14 +24,18 @@ public class RecipeManager {
     
     public static void init() {
         recipes.clear();
+        //Iterate through recipes
         for (Object or : CraftingManager.getInstance().b()) {
+            // Create new recipe structure
             RecipeData recipeData = new RecipeData();
             if (or instanceof ShapedRecipes) {
+                // Load shaped recipe
                 ShapedRecipes recipe = (ShapedRecipes) or;
                 recipeData.results = new CraftItemStack(recipe.b());
                 recipeData.ingredients = extractIngredients(recipe);
                 
             } else if (or instanceof ShapelessRecipes) {
+                // Load shapeless recipe
                 ShapelessRecipes recipe = (ShapelessRecipes) or;
                 recipeData.results = new CraftItemStack(recipe.b());
                 recipeData.ingredients = extractIngredients(recipe);
@@ -39,9 +43,9 @@ public class RecipeManager {
             
             if (recipeData.ingredients != null && recipeData.ingredients.size() > 0) {
                 recipes.add(recipeData);
-                Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
+                //Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
                 for (ItemStack ingredient : recipeData.ingredients) {
-                    Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
+                    //Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
                 }
             }
         }
