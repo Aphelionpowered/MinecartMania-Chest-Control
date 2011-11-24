@@ -51,19 +51,19 @@
             <artifactId>minecartmaniacore</artifactId>
             <version>1.2.9-SNAPSHOT</version>
         </dependency>
-
+        
         <!-- Bukkit -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <!-- CraftBukkit -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
         	<groupId>me.taylorkelly</groupId>
