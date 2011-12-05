@@ -177,7 +177,7 @@ public class ItemCollectionManager {
 		ArrayList<ItemContainer> containers = new ArrayList<ItemContainer>();
 		HashSet<Block> blocks = BlockUtils.getAdjacentBlocks(location, 1);
 		for (Block block : blocks) {
-			if (getMinecartManiaInventory(block) != null && getMinecartManiaInventory(block) instanceof MinecartManiaFurnace) {
+			if (getMinecartManiaInventory(block) != null && getMinecartManiaInventory(block) instanceof MinecartManiaBrewingStand) {
 				MinecartManiaBrewingStand furnace = (MinecartManiaBrewingStand)getMinecartManiaInventory(block);
 				for (int line = 0; line < 4; line++) {
 					String text = ((Sign)location.getBlock().getState()).getLine(line);
