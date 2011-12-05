@@ -14,6 +14,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
 import org.bukkit.block.Sign;
 
+import com.afforess.minecartmaniacore.inventory.MinecartManiaBrewingStand;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaDoubleChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaFurnace;
@@ -56,7 +57,7 @@ public class ItemCollectionManager {
 		ArrayList<String> lines = new ArrayList<String>(3);
 		for (int line = 1; line < 4; line++) {
 			String text = StringUtils.removeBrackets(sign.getLine(line)).trim();
-			if (!text.isEmpty() && !isFurnaceFuelLine(text) && !isFurnaceSmeltLine(text)) {
+			if (!text.isEmpty() && !isFurnaceFuelLine(text) && !isFurnaceSmeltLine(text) && !isBrewingStandBottomLine(text) && !isBrewingStandTopLine(text)) {
 				CompassDirection direction = ItemUtils.getLineItemDirection(text);
 				if (!directions.containsKey(direction)) {
 					directions.put(direction, text);
@@ -112,7 +113,7 @@ public class ItemCollectionManager {
 				}
 				ArrayList<String> lines = getItemLines(((Sign)location.getBlock().getState()));
 				for (String text : lines) {
-					if (!text.isEmpty() && !isFurnaceFuelLine(text) && !isFurnaceSmeltLine(text)) {
+					if (!text.isEmpty() && !isFurnaceFuelLine(text) && !isFurnaceSmeltLine(text) && !isBrewingStandBottomLine(text) && !isBrewingStandTopLine(text)) {
 						ItemContainer temp = null;
 						if (collection) {
 							MinecartManiaLogger.getInstance().debug("Found Inventory To Collect From");
@@ -122,6 +123,9 @@ public class ItemCollectionManager {
 							if (inventory instanceof MinecartManiaFurnace) {
 								MinecartManiaLogger.getInstance().debug("Found Furnace To Deposit From");
 								temp = new FurnaceDepositItemContainer((MinecartManiaFurnace)inventory, text, direction);
+							} else if (inventory instanceof MinecartManiaBrewingStand) {
+							 	MinecartManiaLogger.getInstance().debug("Found Brewing Stand To Deposit From");
+								temp = new BrewingStandDepositItemContainer((MinecartManiaBrewingStand)inventory, text, direction);
 							}
 							else {
 								MinecartManiaLogger.getInstance().debug("Found Inventory To Deposit From");
@@ -142,7 +146,7 @@ public class ItemCollectionManager {
 		ArrayList<ItemContainer> containers = new ArrayList<ItemContainer>();
 		ArrayList<String> lines = getItemLines(((Sign)location.getBlock().getState()));
 		for (String text : lines) {
-			if (!text.isEmpty() && !isFurnaceFuelLine(text) && !isFurnaceSmeltLine(text)) {
+			if (!text.isEmpty() && !isFurnaceFuelLine(text) && !isFurnaceSmeltLine(text) && !isBrewingStandBottomLine(text) && !isBrewingStandTopLine(text)) {
 				containers.add(new TrashItemContainer(text, direction));
 			}
 		}
@@ -169,6 +173,34 @@ public class ItemCollectionManager {
 		return containers;
 	}
 	
+	public static ArrayList<ItemContainer> getBrewingStandContainers(Location location, CompassDirection direction) {
+		ArrayList<ItemContainer> containers = new ArrayList<ItemContainer>();
+		HashSet<Block> blocks = BlockUtils.getAdjacentBlocks(location, 1);
+		for (Block block : blocks) {
+			if (getMinecartManiaInventory(block) != null && getMinecartManiaInventory(block) instanceof MinecartManiaFurnace) {
+				MinecartManiaBrewingStand furnace = (MinecartManiaBrewingStand)getMinecartManiaInventory(block);
+				for (int line = 0; line < 4; line++) {
+					String text = ((Sign)location.getBlock().getState()).getLine(line);
+					if (isBrewingStandTopLine(text)) {
+						containers.add(new BrewingStandTopContainer(furnace, text, direction));
+					}
+					else if (isBrewingStandBottomLine(text)) {
+						containers.add(new BrewingStandBottomContainer(furnace, text, direction));
+					}
+				}
+			}
+		}
+		return containers;
+	}
+	
+	private static boolean isBrewingStandTopLine(String line) {
+		return line.toLowerCase().contains("top:");
+	}
+
+	private static boolean isBrewingStandBottomLine(String line) {
+		return line.toLowerCase().contains("bottom:");
+	}
+
 	private static void bracketizeSign(Sign sign) {
 		for (int line = 0; line < 4; line++) {
 			if (!sign.getLine(line).trim().isEmpty())
@@ -201,6 +233,7 @@ public class ItemCollectionManager {
 				containers.addAll(getTrashItemContainers(sign.getBlock().getLocation(), minecart.getDirection()));
 			}
 			containers.addAll(getFurnaceContainers(sign.getBlock().getLocation(), minecart.getDirection()));
+			containers.addAll(getBrewingStandContainers(sign.getBlock().getLocation(), minecart.getDirection()));
 		}
 		minecart.setDataValue("ItemContainerList", containers);
 	}
