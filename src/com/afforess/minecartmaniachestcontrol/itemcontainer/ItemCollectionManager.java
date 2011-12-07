@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.BrewingStand;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.Furnace;
@@ -94,13 +95,16 @@ public class ItemCollectionManager {
 		else if (block.getState() instanceof Dispenser) {
 			inventory = MinecartManiaWorld.getMinecartManiaDispenser((Dispenser)block.getState());
 		}
-		else if (block.getState() instanceof Furnace) {
-			inventory = MinecartManiaWorld.getMinecartManiaFurnace((Furnace)block.getState());
-		}
+        else if (block.getState() instanceof Furnace) {
+            inventory = MinecartManiaWorld.getMinecartManiaFurnace((Furnace)block.getState());
+        }
+        else if (block.getState() instanceof BrewingStand) {
+            inventory = MinecartManiaWorld.getMinecartManiaBrewingStand((BrewingStand)block.getState());
+        }
 		return inventory;
 	}
 	
-	public static ArrayList<ItemContainer> getItemContainers(Location location, CompassDirection direction, boolean collection) {
+    public static ArrayList<ItemContainer> getItemContainers(Location location, CompassDirection direction, boolean collection) {
 		ArrayList<ItemContainer> containers = new ArrayList<ItemContainer>();
 		HashSet<Block> blocks = BlockUtils.getAdjacentBlocks(location, 1);
 		HashSet<Block> toSkip = new HashSet<Block>();
@@ -178,14 +182,14 @@ public class ItemCollectionManager {
 		HashSet<Block> blocks = BlockUtils.getAdjacentBlocks(location, 1);
 		for (Block block : blocks) {
 			if (getMinecartManiaInventory(block) != null && getMinecartManiaInventory(block) instanceof MinecartManiaBrewingStand) {
-				MinecartManiaBrewingStand furnace = (MinecartManiaBrewingStand)getMinecartManiaInventory(block);
+				MinecartManiaBrewingStand brewingStand = (MinecartManiaBrewingStand)getMinecartManiaInventory(block);
 				for (int line = 0; line < 4; line++) {
 					String text = ((Sign)location.getBlock().getState()).getLine(line);
 					if (isBrewingStandTopLine(text)) {
-						containers.add(new BrewingStandTopContainer(furnace, text, direction));
+						containers.add(new BrewingStandTopContainer(brewingStand, text, direction));
 					}
 					else if (isBrewingStandBottomLine(text)) {
-						containers.add(new BrewingStandBottomContainer(furnace, text, direction));
+						containers.add(new BrewingStandBottomContainer(brewingStand, text, direction));
 					}
 				}
 			}

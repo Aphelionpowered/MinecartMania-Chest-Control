@@ -37,7 +37,7 @@ public class BrewingStandTopContainer extends GenericItemContainer implements It
 			for (AbstractItem item : list) {
 				if (item != null) {
 					if (item.isInfinite()) {
-						item.setAmount(64);
+						item.setAmount(1);
 					}
 					short data = (short) (item.hasData() ? item.getData() : -1);
 					//does not match the item already in the slot, continue
@@ -47,7 +47,7 @@ public class BrewingStandTopContainer extends GenericItemContainer implements It
 					int toAdd = Math.min(item.getAmount(), withdraw.amount(item.type()));
 					item.setAmount(toAdd);
 					if (stand.getItem(SLOT) != null) {
-						toAdd = Math.min(64 - stand.getItem(SLOT).getAmount(), toAdd);
+						toAdd = Math.min(1 - stand.getItem(SLOT).getAmount(), toAdd);
 						item.setAmount(stand.getItem(SLOT).getAmount() + toAdd);
 					}
 					if (withdraw.contains(item.type()) && withdraw.canRemoveItem(item.getId(), toAdd, data)) {

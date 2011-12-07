@@ -13,11 +13,11 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
 
 	public BrewingStandBottomContainer(MinecartManiaBrewingStand bs, String line, CompassDirection direction) {
 		super(line, direction);
-		if (line.toLowerCase().contains("smelt")) {
+		if (line.toLowerCase().contains("bottom")) {
 			String[] split = line.split(":");
 			line = "";
 			for (String s : split) {
-				if (!s.toLowerCase().contains("smelt")) {
+				if (!s.toLowerCase().contains("bottom")) {
 					line += s + ":";
 				}
 			}
@@ -32,7 +32,7 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
 		for (AbstractItem item : list) {
 			if (item != null) {
 				if (item.isInfinite()) {
-					item.setAmount(64);
+					item.setAmount(1);
 				}
 				for(int slotId=0;slotId<3;slotId++) {
 					short data = (short) (item.hasData() ? item.getData() : -1);
@@ -43,7 +43,7 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
 					int toAdd = Math.min(item.getAmount(), withdraw.amount(item.type()));
 					item.setAmount(toAdd);
 					if (brewingStand.getItem(slotId) != null) {
-						toAdd = Math.min(64 - brewingStand.getItem(slotId).getAmount(), toAdd);
+						toAdd = Math.min(1 - brewingStand.getItem(slotId).getAmount(), toAdd);
 						item.setAmount(brewingStand.getItem(slotId).getAmount() + toAdd);
 					}
 					if (withdraw.contains(item.type()) && withdraw.canRemoveItem(item.getId(), toAdd, data)) {
