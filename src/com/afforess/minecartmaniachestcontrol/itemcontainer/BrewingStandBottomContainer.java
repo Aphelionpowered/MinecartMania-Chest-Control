@@ -1,19 +1,11 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.afforess.minecartmaniacore.inventory.MinecartManiaBrewingStand;
-import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
-import com.afforess.minecartmaniacore.utils.ListUtils;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.world.AbstractItem;
-import com.afforess.minecartmaniacore.world.Item;
 
 public class BrewingStandBottomContainer extends GenericItemContainer implements
         ItemContainer {
@@ -37,26 +29,33 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
     }
     
     public void doCollection(MinecartManiaInventory withdraw) {
-        @SuppressWarnings("unchecked")
-        ArrayList<AbstractItem> rawList = (ArrayList<AbstractItem>) ListUtils.toArrayList(Arrays.asList(getRawItemList()));
-        
+        ItemStack[] cartContents = withdraw.getContents();
+        ItemStack[] standContents = brewingStand.getContents();
         for (CompassDirection direction : directions) {
             AbstractItem[] list = getItemList(direction);
             for (AbstractItem item : list) {
-                if (item != null && rawList.contains(item)) {
-                    int amount = item.getAmount();
-                    while (withdraw.contains(item.type()) && (item.isInfinite() || amount > 0)) {
-                        ItemStack itemStack = withdraw.getItem(withdraw.first(item.type()));
-                        int toAdd = item.isInfinite() ? itemStack.getAmount() : (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
-                        if (!withdraw.canRemoveItem(itemStack.getTypeId(), toAdd, itemStack.getDurability())) {
-                            break; //if we are not allowed to remove the items, give up
-                        } else if (!brewingStand.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()), 0, 2)) {
-                            break;
+                if (item != null) {
+                    item.getAmount();
+                    for (int i = 0; i < 3; i++) {
+                        ItemStack slotContents = brewingStand.getItem(i);
+                        
+                        // Ensure the slot is clear. (No stacking allowed)
+                        if (slotContents != null) {
+                            continue; // Skip it.
                         }
-                        withdraw.removeItem(itemStack.getTypeId(), toAdd, itemStack.getDurability());
-                        amount -= toAdd;
+                        
+                        // Try to remove the item from the cart.
+                        if (!withdraw.removeItem(item.getId(), 1, (short) item.getData())) {
+                            //Failed, restore backup of inventory
+                            withdraw.setContents(cartContents);
+                            brewingStand.setContents(standContents);
+                            return;
+                        }
+                        
+                        // Awesome, add it to the stand.
+                        withdraw.setItem(i, new ItemStack(item.getId(), 1, (short) item.getData()));
+                        
                     }
-                    rawList.remove(item);
                 }
             }
         }
