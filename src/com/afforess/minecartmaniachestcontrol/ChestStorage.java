@@ -161,13 +161,12 @@ public abstract class ChestStorage {
                                 boolean outOfIngredients = false;
                                 
                                 int loops = 0;
-                                int yield = 0;
                                 
                                 List<ItemStack> fixedIngredients = new ArrayList<ItemStack>();
                                 
                                 debug(minecart, "RECIPE: " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")");
                                 // Until we're out of ingredients, or the loop has been executed 64 times.
-                                while (!outOfIngredients && loops < 64 && yield < Math.min(item.getAmount(), 64)) {
+                                while (!outOfIngredients && loops < 64) {
                                     fixedIngredients.clear();
                                     
                                     loops++;
@@ -262,7 +261,6 @@ public abstract class ChestStorage {
                                     }
                                     // Take it from the cart
                                     minecart.addItem(recipe.results);
-                                    yield+=recipe.results.getAmount();
                                     debug(minecart, "[Craft Items] Added " + recipe.results.toString() + " to minecart!");
                                 }
                             }
