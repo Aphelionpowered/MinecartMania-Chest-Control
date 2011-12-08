@@ -6,6 +6,7 @@ import com.afforess.minecartmaniacore.inventory.MinecartManiaBrewingStand;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.world.AbstractItem;
+import com.afforess.minecartmaniacore.world.Item;
 
 public class BrewingStandDepositItemContainer extends GenericItemContainer
         implements ItemContainer {
@@ -32,10 +33,10 @@ public class BrewingStandDepositItemContainer extends GenericItemContainer
                         // Slot MUST NOT be empty.
                         if (slotContents == null)
                             continue;
-                        
-                        // Not what we're looking for?
-                        if (slotContents.getTypeId() != item.getId() || (item.hasData() && slotContents.getDurability() != item.getData())) {
-                            continue; // Skip it
+
+                        //does not match the item already in the slot, continue
+                        if (brewingStand.getItem(i) == null || !item.equals(Item.getItem(brewingStand.getItem(i)))) {
+                            continue;
                         }
                         
                         // See if we can add this crap to the Minecart.
