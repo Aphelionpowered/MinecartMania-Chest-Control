@@ -34,7 +34,7 @@ public class BrewingStandDepositItemContainer extends GenericItemContainer
                             continue;
                         
                         // Not what we're looking for?
-                        if (slotContents.getTypeId() != item.getId() || (item.hasData() && (item.getData() != -1 || slotContents.getDurability() != item.getData()))) {
+                        if (slotContents.getTypeId() != item.getId() || (item.hasData() && slotContents.getDurability() != item.getData())) {
                             continue; // Skip it
                         }
                         
