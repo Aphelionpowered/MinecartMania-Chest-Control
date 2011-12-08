@@ -53,7 +53,7 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
                         }
                         
                         // Awesome, add it to the stand.
-                        withdraw.setItem(i, new ItemStack(item.getId(), 1, (short) item.getData()));
+                        brewingStand.setItem(i, new ItemStack(item.getId(), 1, (short) item.getData()));
                         
                     }
                 }
