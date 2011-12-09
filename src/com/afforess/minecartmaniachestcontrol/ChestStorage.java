@@ -178,25 +178,32 @@ public abstract class ChestStorage {
                                         ArrayList<Item> aitem = Item.getItem(stack.getTypeId());
                                         
                                         if (stack.getDurability() == (short) -1 && aitem.size() > 1) {
-                                            // if this stack has no subtype preference,
-                                            for (int s = 0; s < 16; s++) {
-                                                // loop through subtypes
-                                                
-                                                stack.setDurability((short) s);
-                                                
-                                                sitem = Item.getItem(stack);
-                                                if (sitem == null) {
-                                                    continue;
-                                                }
-                                                // See if we have the needed ingredient
-                                                int num = minecart.amount(sitem);
-                                                if (minecart.amount(sitem) < stack.getAmount()) {
-                                                    continue;
-                                                } else {
-                                                    debug(minecart, "Cart has " + num + " " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")!");
-                                                    found = true;
+                                            // See what we have
+                                            ItemStack subitem = null;
+                                            for (int is = 0; is < minecart.size(); is++) {
+                                                ItemStack si = minecart.getItem(is);
+                                                if (si != null && si.getTypeId() == stack.getTypeId()) {
+                                                    subitem = si;
                                                     break;
                                                 }
+                                                
+                                            }
+                                            if (subitem == null)
+                                                continue;
+                                            stack.setDurability(subitem.getDurability());
+                                            
+                                            sitem = Item.getItem(stack);
+                                            if (sitem == null) {
+                                                continue;
+                                            }
+                                            // See if we have the needed ingredient
+                                            int num = minecart.amount(sitem);
+                                            if (minecart.amount(sitem) < stack.getAmount()) {
+                                                continue;
+                                            } else {
+                                                debug(minecart, "Cart has " + num + " " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")!");
+                                                found = true;
+                                                break;
                                             }
                                         } else {
                                             if (stack.getDurability() == -1) {
