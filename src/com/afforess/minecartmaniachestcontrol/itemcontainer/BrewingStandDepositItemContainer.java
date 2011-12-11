@@ -5,8 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaBrewingStand;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
-import com.afforess.minecartmaniacore.world.AbstractItem;
-import com.afforess.minecartmaniacore.world.Item;
+import com.afforess.minecartmaniacore.utils.ItemMatcher;
 
 public class BrewingStandDepositItemContainer extends GenericItemContainer
         implements ItemContainer {
@@ -24,8 +23,8 @@ public class BrewingStandDepositItemContainer extends GenericItemContainer
         ItemStack[] cartContents = deposit.getContents();
         ItemStack[] standContents = brewingStand.getContents();
         for (CompassDirection direction : directions) {
-            AbstractItem[] list = getItemList(direction);
-            for (AbstractItem item : list) {
+            ItemMatcher[] list = getMatchers(direction);
+            for (ItemMatcher item : list) {
                 if (item != null) {
                     for (int i = 0; i < 3; i++) {
                         ItemStack slotContents = brewingStand.getItem(i);
@@ -34,8 +33,8 @@ public class BrewingStandDepositItemContainer extends GenericItemContainer
                         if (slotContents == null)
                             continue;
 
-                        //does not match the item already in the slot, continue
-                        if (brewingStand.getItem(i) == null || !item.equals(Item.getItem(brewingStand.getItem(i)))) {
+                        //does not match the item already in the slot, or isn't an item we want so, continue
+                        if (brewingStand.getItem(i) == null || !item.match(brewingStand.getItem(i))) {
                             continue;
                         }
                         

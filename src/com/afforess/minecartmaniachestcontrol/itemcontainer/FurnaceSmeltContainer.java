@@ -1,10 +1,13 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
+import org.bukkit.inventory.ItemStack;
+
 import com.afforess.minecartmaniacore.world.AbstractItem;
 import com.afforess.minecartmaniacore.world.Item;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaFurnace;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
+import com.afforess.minecartmaniacore.utils.ItemMatcher;
 
 public class FurnaceSmeltContainer extends GenericItemContainer implements ItemContainer{
 	MinecartManiaFurnace furnace;
@@ -27,27 +30,24 @@ public class FurnaceSmeltContainer extends GenericItemContainer implements ItemC
 
 	public void doCollection(MinecartManiaInventory withdraw) {
 		for (CompassDirection direction : directions) {
-			AbstractItem[] list = getItemList(direction);
-			for (AbstractItem item : list) {
-				if (item != null) {
-					if (item.isInfinite()) {
-						item.setAmount(64);
-					}
-					short data = (short) (item.hasData() ? item.getData() : -1);
+			ItemMatcher[] list = getMatchers(direction);
+			for (ItemMatcher matcher : list) {
+				if (matcher != null) {
 					//does not match the item already in the slot, continue
-					if (furnace.getItem(SLOT) != null && !item.equals(Item.getItem(furnace.getItem(SLOT)))) {
+					if (furnace.getItem(SLOT) != null && !matcher.match(furnace.getItem(SLOT))) {
 						continue;
 					}
-					int toAdd = Math.min(item.getAmount(), withdraw.amount(item.type()));
-					item.setAmount(toAdd);
+					ItemStack transfer = furnace.getItem(SLOT).clone();
+					int toAdd = Math.min(matcher.getAmount(), withdraw.amount(transfer.getTypeId(),transfer.getDurability()));
+					transfer.setAmount(toAdd);
 					if (furnace.getItem(SLOT) != null) {
 						toAdd = Math.min(64 - furnace.getItem(SLOT).getAmount(), toAdd);
-						item.setAmount(furnace.getItem(SLOT).getAmount() + toAdd);
+						transfer.setAmount(furnace.getItem(SLOT).getAmount() + toAdd);
 					}
-					if (withdraw.contains(item.type()) && withdraw.canRemoveItem(item.getId(), toAdd, data)) {
-						if (furnace.canAddItem(item.toItemStack())) {
-							withdraw.removeItem(item.getId(), toAdd, data);
-							furnace.setItem(SLOT, item.toItemStack());
+					if (withdraw.contains(transfer.getTypeId()) && withdraw.canRemoveItem(transfer.getTypeId(), toAdd, transfer.getDurability())) {
+						if (furnace.canAddItem(transfer)) {
+							withdraw.removeItem(transfer.getTypeId(), toAdd, transfer.getDurability());
+							furnace.setItem(SLOT, transfer);
 							return;
 						}
 					}

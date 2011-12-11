@@ -1,26 +1,35 @@
 package com.afforess.minecartmaniachestcontrol.signs;
 
+import org.bukkit.inventory.ItemStack;
+
 import com.afforess.minecartmaniacore.world.AbstractItem;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaStorageCart;
 import com.afforess.minecartmaniacore.signs.Sign;
 import com.afforess.minecartmaniacore.signs.SignAction;
+import com.afforess.minecartmaniacore.utils.ItemMatcher;
 import com.afforess.minecartmaniacore.utils.ItemUtils;
+import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 
 public class MinimumItemAction implements SignAction{
-	protected AbstractItem items[] = null;
+	protected ItemMatcher[] matchers = null;
 	public MinimumItemAction(Sign sign) {
-		this.items = ItemUtils.getItemStringListToMaterial(sign.getLines());
+        this.matchers = ItemUtils.getItemStringToMatchers(sign.getLines(), CompassDirection.NO_DIRECTION);
 	}
 
 	public boolean execute(MinecartManiaMinecart minecart) {
-		if (minecart.isStorageMinecart()) {
-			for (AbstractItem item : items) {
-				((MinecartManiaStorageCart)minecart).setMinimumItem(item.type(), item.getAmount());
-			}
-			return true;
-		}
-		return false;
+        if (minecart.isStorageMinecart()) {
+            for (ItemMatcher matcher : matchers) {
+                for (int i = 0; i < ((MinecartManiaStorageCart) minecart).size(); i++) {
+                    ItemStack item = ((MinecartManiaStorageCart) minecart).getItem(i);
+                    if (matcher.match(item)) {
+                        ((MinecartManiaStorageCart) minecart).setMinimumItem(item.getTypeId(), item.getDurability(), matcher.getAmount());
+                    }
+                }
+            }
+            return true;
+        }
+        return false;
 	}
 
 	public boolean async() {

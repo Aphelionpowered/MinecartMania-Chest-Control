@@ -1,10 +1,13 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
+import org.bukkit.inventory.ItemStack;
+
 import com.afforess.minecartmaniacore.world.AbstractItem;
 import com.afforess.minecartmaniacore.world.Item;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaFurnace;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
+import com.afforess.minecartmaniacore.utils.ItemMatcher;
 
 public class FurnaceDepositItemContainer extends GenericItemContainer implements ItemContainer{
 	private MinecartManiaFurnace furnace;
@@ -16,22 +19,22 @@ public class FurnaceDepositItemContainer extends GenericItemContainer implements
 
 	public void doCollection(MinecartManiaInventory deposit) {
 		for (CompassDirection direction : directions) {
-			AbstractItem[] list = getItemList(direction);
-			for (AbstractItem item : list) {
-				if (item != null) {
-					short data = (short) (item.hasData() ? item.getData() : -1);
+			ItemMatcher[] list = getMatchers(direction);
+			for (ItemMatcher matcher : list) {
+				if (matcher != null) {
 					//does not match the item already in the slot, continue
-					if (furnace.getItem(SLOT) == null || !item.equals(Item.getItem(furnace.getItem(SLOT)))) {
+					if (furnace.getItem(SLOT) == null || !matcher.match(furnace.getItem(SLOT))) {
 						continue;
 					}
 					int toRemove = furnace.getItem(SLOT).getAmount();
-					if (!item.isInfinite() && item.getAmount() < toRemove) {
-						toRemove = item.getAmount();
+					if (matcher.getAmount() < toRemove) {
+						toRemove = matcher.getAmount();
 					}
-					item.setAmount(toRemove);
-					if (furnace.canRemoveItem(item.getId(), toRemove, data)) {
-						if (deposit.canAddItem(item.toItemStack())) {
-							if (deposit.addItem(item.toItemStack())) {
+					ItemStack transfer = furnace.getItem(SLOT).clone();
+                    transfer.setAmount(toRemove);
+					if (furnace.canRemoveItem(transfer.getTypeId(), toRemove, transfer.getDurability())) {
+						if (deposit.canAddItem(transfer)) {
+							if (deposit.addItem(transfer)) {
 								furnace.setItem(SLOT, null);
 							}
 							else {

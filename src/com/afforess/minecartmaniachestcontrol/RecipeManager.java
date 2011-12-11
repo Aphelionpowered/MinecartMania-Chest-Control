@@ -11,7 +11,7 @@ import net.minecraft.server.ShapelessRecipes;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
-import com.afforess.minecartmaniacore.world.AbstractItem;
+import com.afforess.minecartmaniacore.world.SpecificMaterial;
 
 public class RecipeManager {
     public static class RecipeData {
@@ -146,15 +146,15 @@ public class RecipeManager {
         return fD.get(object);
     }
     
-    public static RecipeData findRecipe(AbstractItem desiredOutput) {
+    public static RecipeData findRecipe(SpecificMaterial item) {
         for (RecipeData recipe : recipes) {
-            if (desiredOutput.getId() == recipe.results.getTypeId()) {
+            if (item.getId() == recipe.results.getTypeId()) {
                 // Okay, correct type.  Now, let's see if data matters.
-                if (!desiredOutput.hasData()) {
+                if (item.durability==-1) {
                     // Nope!  We've found the recipe we're looking for.
                     return recipe;
                 } else {
-                    if (desiredOutput.getData() == recipe.results.getDurability())
+                    if (item.durability == recipe.results.getDurability())
                         return recipe;
                 }
             }

@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
@@ -17,9 +18,8 @@ import com.afforess.minecartmaniacore.signs.Sign;
 import com.afforess.minecartmaniacore.utils.ItemUtils;
 import com.afforess.minecartmaniacore.utils.MinecartUtils;
 import com.afforess.minecartmaniacore.utils.SignUtils;
-import com.afforess.minecartmaniacore.world.AbstractItem;
-import com.afforess.minecartmaniacore.world.Item;
 import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
+import com.afforess.minecartmaniacore.world.SpecificMaterial;
 
 public abstract class ChestStorage {
     
@@ -58,7 +58,7 @@ public abstract class ChestStorage {
     
     public static boolean doMinecartCollection(MinecartManiaMinecart minecart) {
         if (minecart.getBlockTypeAhead() != null) {
-            if (minecart.getBlockTypeAhead().getType().getId() == Item.CHEST.getId()) {
+            if (minecart.getBlockTypeAhead().getType().getId() == Material.CHEST.getId()) {
                 MinecartManiaChest chest = MinecartManiaWorld.getMinecartManiaChest((Chest) minecart.getBlockTypeAhead().getState());
                 
                 if (SignCommands.isNoCollection(chest)) {
@@ -112,8 +112,8 @@ public abstract class ChestStorage {
         return false;
     }
     
-    private static int getNumItemsInBlock(Item item) {
-        switch (item) {
+    private static int getNumItemsInBlock(Material m) {
+        switch (m) {
             case CLAY_BALL:
             case SNOW_BALL:
             case STRING:
@@ -137,7 +137,7 @@ public abstract class ChestStorage {
             minecart.setDataValue("Craft Interval", minecart.getRange() / 2);
             HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
             for (Block block : blockList) {
-                if (block.getTypeId() == Item.WORKBENCH.getId()) {
+                if (block.getTypeId() == Material.WORKBENCH.getId()) {
                     ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
                     for (Sign sign : signList) {
                         if (sign.getLine(0).toLowerCase().contains("craft items")) {
@@ -149,7 +149,7 @@ public abstract class ChestStorage {
                                     itemListString += ":";
                                 itemListString += sign.getLine(i);
                             }
-                            for (AbstractItem item : ItemUtils.getItemStringListToMaterial(itemListString.split(":"))) {
+                            for (SpecificMaterial item : ItemUtils.getItemStringListToMaterial(itemListString.split(":"))) {
                                 // Get the recipe, if possible
                                 RecipeData recipe = RecipeManager.findRecipe(item);
                                 
@@ -172,12 +172,9 @@ public abstract class ChestStorage {
                                     loops++;
                                     // Loop through the list of ingredients for this recipe
                                     for (ItemStack stack : recipe.ingredients) {
-                                        Item sitem = null;
                                         boolean found = false;
                                         
-                                        ArrayList<Item> aitem = Item.getItem(stack.getTypeId());
-                                        
-                                        if (stack.getDurability() == (short) -1 && aitem.size() > 1) {
+                                        if (stack.getDurability() == (short) -1) {
                                             // See what we have
                                             ItemStack subitem = null;
                                             for (int is = 0; is < minecart.size(); is++) {
@@ -192,13 +189,9 @@ public abstract class ChestStorage {
                                                 continue;
                                             stack.setDurability(subitem.getDurability());
                                             
-                                            sitem = Item.getItem(stack);
-                                            if (sitem == null) {
-                                                continue;
-                                            }
                                             // See if we have the needed ingredient
-                                            int num = minecart.amount(sitem);
-                                            if (minecart.amount(sitem) < stack.getAmount()) {
+                                            int num = minecart.amount(stack.getTypeId(),stack.getDurability());
+                                            if (minecart.amount(stack.getTypeId(),stack.getDurability()) < stack.getAmount()) {
                                                 continue;
                                             } else {
                                                 debug(minecart, "Cart has " + num + " " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")!");
@@ -210,16 +203,8 @@ public abstract class ChestStorage {
                                                 stack.setDurability((short) 0);
                                             }
                                             
-                                            // if it does
-                                            sitem = Item.getItem(stack);
-                                            if (sitem == null) {
-                                                System.out.println("Could not find item for " + stack.toString() + " (d: " + stack.getDurability() + ")!");
-                                                outOfIngredients = true;
-                                                break;
-                                            }
-                                            
                                             // See if we have the needed ingredients
-                                            if (minecart.amount(sitem) >= stack.getAmount()) {
+                                            if (minecart.amount(stack.getTypeId(),stack.getDurability()) >= stack.getAmount()) {
                                                 found = true;
                                             } else {
                                                 debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
@@ -281,21 +266,24 @@ public abstract class ChestStorage {
     public static void doItemCompression(MinecartManiaStorageCart minecart) {
         HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
         for (Block block : blockList) {
-            if (block.getTypeId() == Item.WORKBENCH.getId()) {
+            if (block.getTypeId() == Material.WORKBENCH.getId()) {
                 ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
                 for (Sign sign : signList) {
                     for (int i = 0; i < sign.getNumLines(); i++) {
                         if (sign.getLine(i).toLowerCase().contains("compress items") || sign.getLine(i).toLowerCase().contains("compress")) {
                             sign.setLine(i, "[Compress Items]");
                             //TODO handling for custom recipies?
-                            Item[][] compressable = { { Item.IRON_INGOT, Item.GOLD_INGOT, Item.LAPIS_LAZULI, Item.DIAMOND, Item.CLAY_BALL, Item.SNOW_BALL }, { Item.IRON_BLOCK, Item.GOLD_BLOCK, Item.LAPIS_BLOCK, Item.DIAMOND_BLOCK, Item.CLAY, Item.SNOW_BLOCK } };
+                            Material[][] compressable = { 
+                                    { Material.IRON_INGOT, Material.GOLD_INGOT, Material.INK_SACK, Material.DIAMOND, Material.CLAY_BALL, Material.SNOW_BALL }, 
+                                    { Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.LAPIS_BLOCK, Material.DIAMOND_BLOCK, Material.CLAY, Material.SNOW_BLOCK } };
                             int n = 0;
-                            for (Item m : compressable[0]) {
+                            for (Material m : compressable[0]) {
+                                ItemStack masItem=new ItemStack(m.getId(),(Material.INK_SACK==m) ? 4 : 0);
                                 int amtPerBlock = getNumItemsInBlock(m);
                                 int amt = 0;
                                 int slot = 0;
                                 for (ItemStack item : minecart.getContents()) {
-                                    if (item != null && m.equals(Item.getItem(item))) {
+                                    if (item != null && item.getTypeId()==masItem.getTypeId() && item.getDurability()==masItem.getDurability()) {
                                         amt += item.getAmount();
                                         minecart.setItem(slot, null);
                                     }
@@ -308,9 +296,7 @@ public abstract class ChestStorage {
                                     compressedAmt -= Math.min(64, compressedAmt);
                                 }
                                 if (left > 0) {
-                                    ItemStack item = compressable[0][n].toItemStack();
-                                    item.setAmount(left);
-                                    minecart.addItem(item);
+                                    minecart.addItem(compressable[0][n].getId(), left);
                                 }
                                 
                                 n++;

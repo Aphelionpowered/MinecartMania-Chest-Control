@@ -3,11 +3,13 @@
  */
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
+
+import org.bukkit.inventory.ItemStack;
+
 import com.afforess.minecartmaniacore.inventory.MinecartManiaBrewingStand;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
-import com.afforess.minecartmaniacore.world.AbstractItem;
-import com.afforess.minecartmaniacore.world.Item;
+import com.afforess.minecartmaniacore.utils.ItemMatcher;
 
 /**
  * @author Rob
@@ -33,27 +35,34 @@ public class BrewingStandTopContainer extends GenericItemContainer implements It
 	}
 	public void doCollection(MinecartManiaInventory withdraw) {
 		for (CompassDirection direction : directions) {
-			AbstractItem[] list = getItemList(direction);
-			for (AbstractItem item : list) {
-				if (item != null) {
-					if (item.isInfinite()) {
-						item.setAmount(1);
-					}
-					short data = (short) (item.hasData() ? item.getData() : -1);
+			ItemMatcher[] list = getMatchers(direction);
+			for (ItemMatcher matcher : list) {
+				if (matcher != null) {
 					//does not match the item already in the slot, continue
-					if (stand.getItem(SLOT) != null && !item.equals(Item.getItem(stand.getItem(SLOT)))) {
+					if (stand.getItem(SLOT) != null && !matcher.match(stand.getItem(SLOT))) {
 						continue;
 					}
-					int toAdd = Math.min(item.getAmount(), withdraw.amount(item.type()));
+					ItemStack item=null;
+					int numMatching=0;
+					for(ItemStack compare : withdraw.getContents()) {
+					    if(matcher.match(compare)) {
+					        numMatching+=compare.getAmount();
+					        if(item==null)
+					        item=compare;
+					    }
+					}
+					if(numMatching==0) 
+					    continue;
+					int toAdd = Math.min(matcher.getAmount(), numMatching);
 					item.setAmount(toAdd);
 					if (stand.getItem(SLOT) != null) {
 						toAdd = Math.min(1 - stand.getItem(SLOT).getAmount(), toAdd);
 						item.setAmount(stand.getItem(SLOT).getAmount() + toAdd);
 					}
-					if (withdraw.contains(item.type()) && withdraw.canRemoveItem(item.getId(), toAdd, data)) {
-						if (stand.canAddItem(item.toItemStack())) {
-							withdraw.removeItem(item.getId(), toAdd, data);
-							stand.setItem(SLOT, item.toItemStack());
+					if (withdraw.contains(item.getTypeId()) && withdraw.canRemoveItem(item.getTypeId(), toAdd, item.getDurability())) {
+						if (stand.canAddItem(item)) {
+							withdraw.removeItem(item.getTypeId(), toAdd, item.getDurability());
+							stand.setItem(SLOT, item);
 							return;
 						}
 					}

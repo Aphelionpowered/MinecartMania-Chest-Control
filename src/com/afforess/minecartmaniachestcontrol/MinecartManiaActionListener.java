@@ -5,25 +5,25 @@ import java.util.HashSet;
 import java.util.Iterator;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 
 import com.afforess.minecartmaniachestcontrol.itemcontainer.ItemCollectionManager;
 import com.afforess.minecartmaniachestcontrol.signs.MaximumItemAction;
 import com.afforess.minecartmaniachestcontrol.signs.MinimumItemAction;
-import com.afforess.minecartmaniacore.world.Item;
-import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
-import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
-import com.afforess.minecartmaniacore.minecart.MinecartManiaStorageCart;
-import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 import com.afforess.minecartmaniacore.event.ChestPoweredEvent;
 import com.afforess.minecartmaniacore.event.MinecartActionEvent;
 import com.afforess.minecartmaniacore.event.MinecartDirectionChangeEvent;
 import com.afforess.minecartmaniacore.event.MinecartManiaListener;
 import com.afforess.minecartmaniacore.event.MinecartManiaSignFoundEvent;
+import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
+import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
+import com.afforess.minecartmaniacore.minecart.MinecartManiaStorageCart;
 import com.afforess.minecartmaniacore.signs.Sign;
 import com.afforess.minecartmaniacore.signs.SignAction;
 import com.afforess.minecartmaniacore.utils.BlockUtils;
 import com.afforess.minecartmaniacore.utils.ComparableLocation;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
+import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 
 public class MinecartManiaActionListener extends MinecartManiaListener{
 	
@@ -31,7 +31,7 @@ public class MinecartManiaActionListener extends MinecartManiaListener{
 		if (event.isPowered() && !event.isActionTaken()) {
 
 			MinecartManiaChest chest = event.getChest();
-			Item minecartType = SignCommands.getMinecartType(chest);
+			Material minecartType = SignCommands.getMinecartType(chest);
 			Location spawnLocation = SignCommands.getSpawnLocationSignOverride(chest);
 			if (spawnLocation == null) {
 				spawnLocation = ChestStorage.getSpawnLocation(chest);

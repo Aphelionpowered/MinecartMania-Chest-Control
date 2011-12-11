@@ -3,16 +3,16 @@ package com.afforess.minecartmaniachestcontrol;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import com.afforess.minecartmaniacore.world.Item;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.signs.MinecartTypeSign;
 import com.afforess.minecartmaniacore.signs.Sign;
+import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.MinecartUtils;
 import com.afforess.minecartmaniacore.utils.SignUtils;
-import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 
 public class SignCommands {
 	
@@ -29,24 +29,24 @@ public class SignCommands {
 		return false;
 	}
 
-	public static Item getMinecartType(MinecartManiaChest chest) {
+	public static Material getMinecartType(MinecartManiaChest chest) {
 		ArrayList<com.afforess.minecartmaniacore.signs.Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(chest.getLocation(), 2);
 		for (com.afforess.minecartmaniacore.signs.Sign sign : signList) {
 			if (sign instanceof MinecartTypeSign) {
 				MinecartTypeSign type = (MinecartTypeSign)sign;
-				if (type.canDispenseMinecartType(Item.MINECART)) {
-					if (chest.contains(Item.MINECART)) {
-						return Item.MINECART;
+				if (type.canDispenseMinecartType(Material.MINECART)) {
+					if (chest.contains(Material.MINECART)) {
+						return Material.MINECART;
 					}
 				}
-				if (type.canDispenseMinecartType(Item.POWERED_MINECART)) {
-					if (chest.contains(Item.POWERED_MINECART)) {
-						return Item.POWERED_MINECART;
+				if (type.canDispenseMinecartType(Material.POWERED_MINECART)) {
+					if (chest.contains(Material.POWERED_MINECART)) {
+						return Material.POWERED_MINECART;
 					}
 				}
-				if (type.canDispenseMinecartType(Item.STORAGE_MINECART)) {
-					if (chest.contains(Item.STORAGE_MINECART)) {
-						return Item.STORAGE_MINECART;
+				if (type.canDispenseMinecartType(Material.STORAGE_MINECART)) {
+					if (chest.contains(Material.STORAGE_MINECART)) {
+						return Material.STORAGE_MINECART;
 					}
 				}
 			}
@@ -54,7 +54,7 @@ public class SignCommands {
 			
 
 		//Returns standard minecart by default
-		return Item.MINECART;
+		return Material.MINECART;
 	}
 
 	public static Location getSpawnLocationSignOverride(MinecartManiaChest chest) {
@@ -100,7 +100,7 @@ public class SignCommands {
 		if (MinecartUtils.isTrack(center.getRelative(dir))) {
 			return center.getRelative(dir).getLocation();
 		}
-		if (center.getRelative(dir).getTypeId() == Item.CHEST.getId() && MinecartUtils.isTrack(center.getRelative(dir).getRelative(dir))) {
+		if (center.getRelative(dir).getTypeId() == Material.CHEST.getId() && MinecartUtils.isTrack(center.getRelative(dir).getRelative(dir))) {
 			return center.getRelative(dir).getRelative(dir).getLocation();
 		}
 		return null;

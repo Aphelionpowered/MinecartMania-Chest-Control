@@ -1,8 +1,9 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
-import com.afforess.minecartmaniacore.world.AbstractItem;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
+import com.afforess.minecartmaniacore.utils.ItemMatcher;
+import com.afforess.minecartmaniacore.world.SpecificMaterial;
 
 public interface ItemContainer {
 	
@@ -10,9 +11,9 @@ public interface ItemContainer {
 	
 	public boolean hasAmountCondition();
 	
-	public AbstractItem[] getRawItemList();
+	public SpecificMaterial[] getRawItemList();
 	
-	public AbstractItem[] getItemList(CompassDirection direction);
+	public ItemMatcher[] getMatchers(CompassDirection direction);
 	
 	public void addDirection(CompassDirection direction);
 	

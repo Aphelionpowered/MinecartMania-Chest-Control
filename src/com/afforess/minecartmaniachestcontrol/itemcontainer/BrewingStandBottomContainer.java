@@ -6,6 +6,7 @@ import com.afforess.minecartmaniacore.inventory.MinecartManiaBrewingStand;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.world.AbstractItem;
+import com.afforess.minecartmaniacore.world.SpecificMaterial;
 
 public class BrewingStandBottomContainer extends GenericItemContainer implements
         ItemContainer {
@@ -32,10 +33,9 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
         ItemStack[] cartContents = withdraw.getContents();
         ItemStack[] standContents = brewingStand.getContents();
         for (CompassDirection direction : directions) {
-            AbstractItem[] list = getItemList(direction);
-            for (AbstractItem item : list) {
+            SpecificMaterial[] list = this.getItemList(direction);
+            for (SpecificMaterial item : list) {
                 if (item != null) {
-                    item.getAmount();
                     for (int i = 0; i < 3; i++) {
                         ItemStack slotContents = brewingStand.getItem(i);
                         

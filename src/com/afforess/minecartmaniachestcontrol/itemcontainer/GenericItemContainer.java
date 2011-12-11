@@ -1,8 +1,11 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import com.afforess.minecartmaniacore.world.AbstractItem;
+import com.afforess.minecartmaniacore.world.SpecificMaterial;
+import com.afforess.minecartmaniacore.utils.ItemMatcher;
 import com.afforess.minecartmaniacore.utils.ItemUtils;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 
@@ -22,11 +25,16 @@ public abstract class GenericItemContainer implements ItemContainer{
 		return line.contains("@");
 	}
 
-	public AbstractItem[] getRawItemList() {
+	public SpecificMaterial[] getRawItemList() {
 		return ItemUtils.getItemStringToMaterial(line);
 	}
 
-	public AbstractItem[] getItemList(CompassDirection direction) {
+	public ItemMatcher[] getMatchers(CompassDirection direction) {
+	    ArrayList<ItemMatcher> matchers = new ArrayList<ItemMatcher>();
+	    return ItemUtils.getItemStringToMatchers(line,direction);
+	}
+	
+	public SpecificMaterial[] getItemList(CompassDirection direction) {
 		String[] list = {line};
 		return ItemUtils.getItemStringListToMaterial(list, direction);
 	}
