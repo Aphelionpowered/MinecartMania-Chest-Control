@@ -39,8 +39,8 @@ public class FurnaceFuelContainer extends GenericItemContainer implements
                     if (furnace.getItem(SLOT) != null && !matcher.match(furnace.getItem(SLOT))) {
                         continue;
                     }
-                    ItemStack transfer = furnace.getItem(SLOT).clone();
-                    if (transfer != null) {
+                    if (furnace.getItem(SLOT) != null) {
+                        ItemStack transfer = furnace.getItem(SLOT).clone();
                         int toAdd = Math.min(transfer.getAmount(), withdraw.amount(transfer.getTypeId(), transfer.getDurability()));
                         transfer.setAmount(toAdd);
                         toAdd = Math.min(64 - furnace.getItem(SLOT).getAmount(), toAdd);

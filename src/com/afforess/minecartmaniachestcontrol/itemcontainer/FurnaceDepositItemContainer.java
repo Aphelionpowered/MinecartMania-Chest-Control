@@ -29,12 +29,12 @@ public class FurnaceDepositItemContainer extends GenericItemContainer implements
                     if (furnace.getItem(SLOT) == null || !matcher.match(furnace.getItem(SLOT))) {
                         continue;
                     }
-                    int toRemove = furnace.getItem(SLOT).getAmount();
-                    if (matcher.getAmount() < toRemove) {
-                        toRemove = matcher.getAmount();
-                    }
-                    ItemStack transfer = furnace.getItem(SLOT).clone();
-                    if (transfer != null) {
+                    if (furnace.getItem(SLOT) != null) {
+                        ItemStack transfer = furnace.getItem(SLOT).clone();
+                        int toRemove = furnace.getItem(SLOT).getAmount();
+                        if (matcher.getAmount() < toRemove) {
+                            toRemove = matcher.getAmount();
+                        }
                         transfer.setAmount(toRemove);
                         if (furnace.canRemoveItem(transfer.getTypeId(), toRemove, transfer.getDurability())) {
                             if (deposit.canAddItem(transfer)) {
