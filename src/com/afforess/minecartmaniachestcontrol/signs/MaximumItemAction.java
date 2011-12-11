@@ -22,6 +22,7 @@ public class MaximumItemAction implements SignAction {
             for (ItemMatcher matcher : matchers) {
                 for (int i = 0; i < ((MinecartManiaStorageCart) minecart).size(); i++) {
                     ItemStack item = ((MinecartManiaStorageCart) minecart).getItem(i);
+                    if(item==null) continue;
                     if (matcher.match(item)) {
                         ((MinecartManiaStorageCart) minecart).setMaximumItem(item.getTypeId(), item.getDurability(), matcher.getAmount());
                     }
