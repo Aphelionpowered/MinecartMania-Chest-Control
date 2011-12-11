@@ -41,6 +41,8 @@ public class ItemCollectionContainer extends GenericItemContainer implements
                     int amount = matcher.getAmount();
                     for (int i = 0; i < withdraw.size(); i++) {
                         ItemStack itemStack = withdraw.getItem(i);
+                        if (itemStack == null)
+                            continue;
                         itemStack.setAmount(amount);
                         if (matcher.match(itemStack)) {
                             int toAdd = itemStack.getAmount() > amount ? amount : itemStack.getAmount();

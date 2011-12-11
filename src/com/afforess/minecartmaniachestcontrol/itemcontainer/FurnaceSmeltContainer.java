@@ -37,7 +37,7 @@ public class FurnaceSmeltContainer extends GenericItemContainer implements ItemC
 					if (furnace.getItem(SLOT) != null && !matcher.match(furnace.getItem(SLOT))) {
 						continue;
 					}
-					ItemStack transfer = furnace.getItem(SLOT).clone();
+					ItemStack transfer = furnace.getItem(SLOT);
 					int toAdd = Math.min(matcher.getAmount(), withdraw.amount(transfer.getTypeId(),transfer.getDurability()));
 					transfer.setAmount(toAdd);
 					if (furnace.getItem(SLOT) != null) {
