@@ -14,7 +14,7 @@ public class MaximumItemAction implements SignAction {
     protected ItemMatcher[] matchers = null;
     
     public MaximumItemAction(Sign sign) {
-        this.matchers = ItemUtils.getItemStringToMatchers(sign.getLines(), CompassDirection.NO_DIRECTION);
+        this.matchers = ItemUtils.getItemStringListToMatchers(sign.getLines(), CompassDirection.NO_DIRECTION);
     }
     
     public boolean execute(MinecartManiaMinecart minecart) {

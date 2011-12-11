@@ -14,7 +14,7 @@ import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 public class MinimumItemAction implements SignAction{
 	protected ItemMatcher[] matchers = null;
 	public MinimumItemAction(Sign sign) {
-        this.matchers = ItemUtils.getItemStringToMatchers(sign.getLines(), CompassDirection.NO_DIRECTION);
+        this.matchers = ItemUtils.getItemStringListToMatchers(sign.getLines(), CompassDirection.NO_DIRECTION);
 	}
 
 	public boolean execute(MinecartManiaMinecart minecart) {
