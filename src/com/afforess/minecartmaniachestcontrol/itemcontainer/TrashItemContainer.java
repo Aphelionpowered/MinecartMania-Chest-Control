@@ -26,6 +26,8 @@ public class TrashItemContainer extends GenericItemContainer implements
                     int amount = matcher.getAmount();
                     for (int i = 0; i < other.size(); i++) {
                         ItemStack itemStack = other.getItem(i);
+                        if (itemStack == null)
+                            continue;
                         itemStack.setAmount(amount);
                         while (matcher.match(itemStack) && amount > 0) {
                             int toAdd = (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
