@@ -37,6 +37,7 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
             for (ItemStack item : cartContents) {
                 if (item != null) {
                     for (ItemMatcher matcher : this.getMatchers(direction)) {
+                        if(matcher==null) continue;
                         if (matcher.match(item)) {
                             for (int i = 0; i < 3; i++) {
                                 ItemStack slotContents = brewingStand.getItem(i);
