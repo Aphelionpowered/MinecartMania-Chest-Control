@@ -1,19 +1,13 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.afforess.minecartmaniacore.world.AbstractItem;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
-import com.afforess.minecartmaniacore.debug.MinecartManiaLogger;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
-import com.afforess.minecartmaniacore.utils.ListUtils;
 
 public class ItemCollectionContainer extends GenericItemContainer implements
         ItemContainer {
@@ -38,14 +32,15 @@ public class ItemCollectionContainer extends GenericItemContainer implements
             ItemMatcher[] list = getMatchers(direction);
             for (ItemMatcher matcher : list) {
                 if (matcher != null) {
-                    int amount = matcher.getAmount();
                     for (int i = 0; i < withdraw.size(); i++) {
                         ItemStack itemStack = withdraw.getItem(i);
                         if (itemStack == null)
                             continue;
-                        itemStack.setAmount(amount);
+                        int amount = matcher.getAmount(withdraw.amount(itemStack.getTypeId(), itemStack.getDurability()));
+                        
                         if (matcher.match(itemStack)) {
                             int toAdd = itemStack.getAmount() > amount ? amount : itemStack.getAmount();
+                            itemStack.setAmount(toAdd);
                             if (!withdraw.canRemoveItem(itemStack.getTypeId(), toAdd, itemStack.getDurability())) {
                                 break; //if we are not allowed to remove the items, give up
                             } else if (!inventory.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()), owner)) {

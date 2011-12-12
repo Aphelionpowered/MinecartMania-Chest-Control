@@ -32,7 +32,7 @@ public class BrewingStandDepositItemContainer extends GenericItemContainer
                         // Slot MUST NOT be empty.
                         if (slotContents == null)
                             continue;
-
+                        
                         //does not match the item already in the slot, or isn't an item we want so, continue
                         if (brewingStand.getItem(i) == null || !item.match(brewingStand.getItem(i))) {
                             continue;

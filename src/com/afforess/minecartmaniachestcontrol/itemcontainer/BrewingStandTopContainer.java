@@ -50,10 +50,11 @@ public class BrewingStandTopContainer extends GenericItemContainer implements
                             // Figure out exactly what we matched.
                             ItemStack item = stand.getItem(i).clone();
                             
-                            int amount = matcher.getAmountForTransfer();
+                            int available = withdraw.amount(item.getTypeId(), item.getDurability());
+                            int requested = matcher.getAmount(available);
                             
                             // Determine how much we need to fill the requirements of the system.
-                            int toAdd = Math.min(amount, withdraw.amount(item.getTypeId(), item.getDurability()));
+                            int toAdd = Math.min(requested, available);
                             item.setAmount(toAdd);
                             
                             // If the stand has stuff in the catalyst slot already...

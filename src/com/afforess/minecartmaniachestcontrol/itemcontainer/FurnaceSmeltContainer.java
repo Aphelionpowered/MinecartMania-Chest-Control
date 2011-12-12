@@ -2,8 +2,6 @@ package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
 import org.bukkit.inventory.ItemStack;
 
-import com.afforess.minecartmaniacore.world.AbstractItem;
-import com.afforess.minecartmaniacore.world.Item;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaFurnace;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
@@ -41,7 +39,9 @@ public class FurnaceSmeltContainer extends GenericItemContainer implements
                     }
                     if (furnace.getItem(SLOT) != null) {
                         ItemStack transfer = furnace.getItem(SLOT).clone();
-                        int toAdd = Math.min(matcher.getAmountForTransfer(), withdraw.amount(transfer.getTypeId(), transfer.getDurability()));
+                        
+                        int available = withdraw.amount(transfer.getTypeId(), transfer.getDurability());
+                        int toAdd = Math.min(matcher.getAmount(available), available);
                         transfer.setAmount(toAdd);
                         if (furnace.getItem(SLOT) != null) {
                             toAdd = Math.min(64 - furnace.getItem(SLOT).getAmount(), toAdd);

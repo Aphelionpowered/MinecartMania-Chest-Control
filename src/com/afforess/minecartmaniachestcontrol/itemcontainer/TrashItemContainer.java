@@ -1,15 +1,10 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import org.bukkit.inventory.ItemStack;
 
-import com.afforess.minecartmaniacore.world.AbstractItem;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
-import com.afforess.minecartmaniacore.utils.ItemMatcher;
-import com.afforess.minecartmaniacore.utils.ListUtils;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
+import com.afforess.minecartmaniacore.utils.ItemMatcher;
 
 public class TrashItemContainer extends GenericItemContainer implements
         ItemContainer {
@@ -23,11 +18,12 @@ public class TrashItemContainer extends GenericItemContainer implements
             ItemMatcher[] list = getMatchers(direction);
             for (ItemMatcher matcher : list) {
                 if (matcher != null) {
-                    int amount = matcher.getAmount();
                     for (int i = 0; i < other.size(); i++) {
                         ItemStack itemStack = other.getItem(i);
                         if (itemStack == null)
                             continue;
+                        int amount = matcher.getAmount(other.amount(itemStack.getTypeId(), itemStack.getDurability()));
+                        
                         itemStack.setAmount(amount);
                         while (matcher.match(itemStack) && amount > 0) {
                             int toAdd = (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
