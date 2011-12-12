@@ -64,7 +64,7 @@ public class ChestControlSettingParser implements SettingParser{
 					if (elementChildValue != null && elementChildValue != "") {
 						//Handle the possible nodes we have at this level.
 						if (elementChildName == "version") {
-							if (elementChildValue != String.valueOf(version)) { /* documentUpgrade(document); */ }
+							if (!elementChildValue.equals(String.valueOf(version))) { /* documentUpgrade(document); */ }
 						} else if (elementChildName == "ChestDispenserSpawnDelay"
 								|| elementChildName == "ItemCollectionRange"
 								) {
