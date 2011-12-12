@@ -30,7 +30,6 @@ public abstract class GenericItemContainer implements ItemContainer{
 	}
 
 	public ItemMatcher[] getMatchers(CompassDirection direction) {
-	    ArrayList<ItemMatcher> matchers = new ArrayList<ItemMatcher>();
 	    return ItemUtils.getItemStringToMatchers(line,direction);
 	}
 	
