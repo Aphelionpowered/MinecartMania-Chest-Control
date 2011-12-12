@@ -41,23 +41,48 @@ public class BrewingStandTopContainer extends GenericItemContainer implements
             ItemMatcher[] list = getMatchers(direction);
             for (ItemMatcher matcher : list) {
                 if (matcher != null) {
-                    //does not match the item already in the slot, continue
-                    if (stand.getItem(SLOT) != null && !matcher.match(stand.getItem(SLOT))) {
-                        continue;
-                    }
-                    if (stand.getItem(SLOT) != null) {
-                        ItemStack item = stand.getItem(SLOT).clone();
-                        int toAdd = Math.min(matcher.getAmount(), withdraw.amount(item.getTypeId(), item.getDurability()));
-                        item.setAmount(toAdd);
-                        if (stand.getItem(SLOT) != null) {
-                            toAdd = Math.min(1 - stand.getItem(SLOT).getAmount(), toAdd);
-                            item.setAmount(stand.getItem(SLOT).getAmount() + toAdd);
-                        }
-                        if (withdraw.contains(item.getTypeId()) && withdraw.canRemoveItem(item.getTypeId(), toAdd, item.getDurability())) {
-                            if (stand.canAddItem(item)) {
-                                withdraw.removeItem(item.getTypeId(), toAdd, item.getDurability());
-                                stand.setItem(SLOT, item);
-                                return;
+                    for (int i = 0; i < withdraw.size(); i++) {
+                        if (stand.getItem(i) != null) {
+                            // Try to match up what we need with what we have.
+                            if (!matcher.match(stand.getItem(i))) {
+                                continue;
+                            }
+                            // Figure out exactly what we matched.
+                            ItemStack item = stand.getItem(i).clone();
+                            
+                            // Determine how much we need to fill the requirements of the system.
+                            int toAdd = Math.min(matcher.getAmount(), withdraw.amount(item.getTypeId(), item.getDurability()));
+                            item.setAmount(toAdd);
+                            
+                            // If the stand has stuff in the catalyst slot already...
+                            if (stand.getItem(SLOT) != null) {
+                                
+                                // Figure out what it is...
+                                ItemStack catalyst = stand.getItem(SLOT);
+                                
+                                // If it's what we want to put in there anyway, adjust our transaction amount accordingly
+                                if (catalyst.getTypeId()==item.getTypeId() && catalyst.getDurability()==item.getDurability()) {
+                                    toAdd = Math.min(1 - catalyst.getAmount(), toAdd);
+                                    item.setAmount(catalyst.getAmount() + toAdd);
+                                } else {
+                                    // Otherwise, get rid of it.
+                                    if (stand.canRemoveItem(catalyst.getTypeId(), catalyst.getAmount(), catalyst.getDurability())) {
+                                        if (withdraw.canAddItem(catalyst)) {
+                                            stand.removeItem(catalyst.getTypeId(), catalyst.getAmount(), catalyst.getDurability());
+                                            stand.setItem(SLOT, null);
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                            
+                            // Alright, put our stuff in the slot!
+                            if (withdraw.contains(item.getTypeId()) && withdraw.canRemoveItem(item.getTypeId(), toAdd, item.getDurability())) {
+                                if (stand.canAddItem(item)) {
+                                    withdraw.removeItem(item.getTypeId(), toAdd, item.getDurability());
+                                    stand.setItem(SLOT, item);
+                                    return;
+                                }
                             }
                         }
                     }
@@ -65,4 +90,5 @@ public class BrewingStandTopContainer extends GenericItemContainer implements
             }
         }
     }
+    
 }
