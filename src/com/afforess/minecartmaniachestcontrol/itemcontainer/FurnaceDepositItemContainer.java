@@ -32,8 +32,8 @@ public class FurnaceDepositItemContainer extends GenericItemContainer implements
                     if (furnace.getItem(SLOT) != null) {
                         ItemStack transfer = furnace.getItem(SLOT).clone();
                         int toRemove = furnace.getItem(SLOT).getAmount();
-                        if (matcher.getAmount() < toRemove) {
-                            toRemove = matcher.getAmount();
+                        if (matcher.getAmountForTransfer() < toRemove) {
+                            toRemove = matcher.getAmountForTransfer();
                         }
                         transfer.setAmount(toRemove);
                         if (furnace.canRemoveItem(transfer.getTypeId(), toRemove, transfer.getDurability())) {

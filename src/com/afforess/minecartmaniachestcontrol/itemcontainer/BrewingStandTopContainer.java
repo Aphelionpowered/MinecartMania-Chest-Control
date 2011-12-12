@@ -50,8 +50,10 @@ public class BrewingStandTopContainer extends GenericItemContainer implements
                             // Figure out exactly what we matched.
                             ItemStack item = stand.getItem(i).clone();
                             
+                            int amount = matcher.getAmountForTransfer();
+                            
                             // Determine how much we need to fill the requirements of the system.
-                            int toAdd = Math.min(matcher.getAmount(), withdraw.amount(item.getTypeId(), item.getDurability()));
+                            int toAdd = Math.min(amount, withdraw.amount(item.getTypeId(), item.getDurability()));
                             item.setAmount(toAdd);
                             
                             // If the stand has stuff in the catalyst slot already...
@@ -61,7 +63,7 @@ public class BrewingStandTopContainer extends GenericItemContainer implements
                                 ItemStack catalyst = stand.getItem(SLOT);
                                 
                                 // If it's what we want to put in there anyway, adjust our transaction amount accordingly
-                                if (catalyst.getTypeId()==item.getTypeId() && catalyst.getDurability()==item.getDurability()) {
+                                if (catalyst.getTypeId() == item.getTypeId() && catalyst.getDurability() == item.getDurability()) {
                                     toAdd = Math.min(1 - catalyst.getAmount(), toAdd);
                                     item.setAmount(catalyst.getAmount() + toAdd);
                                 } else {
@@ -75,8 +77,6 @@ public class BrewingStandTopContainer extends GenericItemContainer implements
                                     
                                 }
                             }
-                            
-                            // Alright, put our stuff in the slot!
                             if (withdraw.contains(item.getTypeId()) && withdraw.canRemoveItem(item.getTypeId(), toAdd, item.getDurability())) {
                                 if (stand.canAddItem(item)) {
                                     withdraw.removeItem(item.getTypeId(), toAdd, item.getDurability());
