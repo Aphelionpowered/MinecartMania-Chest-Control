@@ -43,9 +43,16 @@ public class ItemCollectionContainer extends GenericItemContainer implements
                             itemStack.setAmount(toAdd);
                             if (!withdraw.canRemoveItem(itemStack.getTypeId(), toAdd, itemStack.getDurability())) {
                                 break; //if we are not allowed to remove the items, give up
-                            } else if (!inventory.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()), owner)) {
-                                break;
-                            }
+                            } else
+                                try {
+                                    if (!inventory.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()), owner)) {
+                                        break;
+                                    }
+                                } catch (Exception e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                    break;
+                                }
                             withdraw.removeItem(itemStack.getTypeId(), toAdd, itemStack.getDurability());
                             amount -= toAdd;
                         }
