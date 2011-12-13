@@ -42,13 +42,13 @@ public class BrewingStandTopContainer extends GenericItemContainer implements
             for (ItemMatcher matcher : list) {
                 if (matcher != null) {
                     for (int i = 0; i < withdraw.size(); i++) {
-                        if (stand.getItem(i) != null) {
+                        if (withdraw.getItem(i) != null) {
                             // Try to match up what we need with what we have.
-                            if (!matcher.match(stand.getItem(i))) {
+                            if (!matcher.match(withdraw.getItem(i))) {
                                 continue;
                             }
                             // Figure out exactly what we matched.
-                            ItemStack item = stand.getItem(i).clone();
+                            ItemStack item = withdraw.getItem(i).clone();
                             
                             int available = withdraw.amount(item.getTypeId(), item.getDurability());
                             int requested = matcher.getAmount(available);
