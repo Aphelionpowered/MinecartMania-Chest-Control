@@ -11,7 +11,7 @@
     <!-- Project information -->
     <groupId>com.afforess</groupId>
     <artifactId>minecartmaniachestcontrol</artifactId>
-    <version>1.2.9-SNAPSHOT</version>
+    <version>2.0-SNAPSHOT</version>
     <name>Minecart Mania Chest Control</name>
     <url>http://afforess.com</url>
     <description>Chest Control handles everything inventory related. Chest Dispensers, item collection, item depositing, dispensers, furnaces, and any other inventory actions are controlled here.</description>
@@ -49,28 +49,22 @@
         <dependency>
             <groupId>com.afforess</groupId>
             <artifactId>minecartmaniacore</artifactId>
-            <version>1.2.9-SNAPSHOT</version>
-        </dependency>
-        
-        <!-- Bukkit -->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.0.0-R1-7CLAMS-SNAPSHOT</version>
+            <version>2.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- CraftBukkit -->
-        <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>craftbukkit</artifactId>
-            <version>1.0.0-7CLAMS-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-        	<groupId>me.taylorkelly</groupId>
-        	<artifactId>bigbrother</artifactId>
-        	<version>1.10.0-SNAPSHOT</version>
-        	<scope>compile</scope>
-        </dependency>
+		<!-- Bukkit -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.0.1-R2-7CLAMS-SNAPSHOT</version>
+		</dependency>
+
+		<!-- CraftBukkit -->
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>1.0.1-R2-7CLAMS-SNAPSHOT</version>
+		</dependency>
     </dependencies>
 
     <build>
