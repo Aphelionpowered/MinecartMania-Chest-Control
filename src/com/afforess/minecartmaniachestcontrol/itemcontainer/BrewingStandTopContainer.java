@@ -49,6 +49,9 @@ public class BrewingStandTopContainer extends GenericItemContainer implements
                             }
                             // Figure out exactly what we matched.
                             ItemStack item = withdraw.getItem(i).clone();
+                            if(item.getAmount()==-1) {
+                                item.setAmount(64);
+                            }
                             
                             int available = withdraw.amount(item.getTypeId(), item.getDurability());
                             int requested = matcher.getAmount(available);
