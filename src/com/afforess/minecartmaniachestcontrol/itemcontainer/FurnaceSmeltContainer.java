@@ -60,7 +60,7 @@ public class FurnaceSmeltContainer extends GenericItemContainer implements
                                 
                                 // If it's what we want to put in there anyway, adjust our transaction amount accordingly
                                 if (catalyst.getTypeId() == item.getTypeId() && catalyst.getDurability() == item.getDurability()) {
-                                    toAdd = Math.min(64 - catalyst.getAmount(), toAdd);
+                                    toAdd = Math.min(0,Math.min(64 - catalyst.getAmount(), toAdd));
                                     item.setAmount(catalyst.getAmount() + toAdd);
                                 } else {
                                     // Otherwise, get rid of it.
