@@ -7,18 +7,16 @@ import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
 
-public class BrewingStandBottomContainer extends GenericItemContainer implements
-        ItemContainer {
+public class BrewingStandBottomContainer extends GenericItemContainer implements ItemContainer {
     
-    private MinecartManiaBrewingStand brewingStand;
+    private final MinecartManiaBrewingStand brewingStand;
     
-    public BrewingStandBottomContainer(MinecartManiaBrewingStand bs,
-            String line, CompassDirection direction) {
+    public BrewingStandBottomContainer(final MinecartManiaBrewingStand bs, String line, final CompassDirection direction) {
         super(line, direction);
         if (line.toLowerCase().contains("bottom")) {
-            String[] split = line.split(":");
+            final String[] split = line.split(":");
             line = "";
-            for (String s : split) {
+            for (final String s : split) {
                 if (!s.toLowerCase().contains("bottom")) {
                     line += s + ":";
                 }
@@ -28,18 +26,19 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
         brewingStand = bs;
     }
     
-    public void doCollection(MinecartManiaInventory withdraw) {
-        ItemStack[] cartContents = withdraw.getContents();
-        ItemStack[] standContents = brewingStand.getContents();
-        for (CompassDirection direction : directions) {
-            for (ItemStack item : cartContents) {
+    public void doCollection(final MinecartManiaInventory withdraw) {
+        final ItemStack[] cartContents = withdraw.getContents();
+        final ItemStack[] standContents = brewingStand.getContents();
+        for (final CompassDirection direction : directions) {
+            for (final ItemStack item : cartContents) {
                 if (item != null) {
-                    for (ItemMatcher matcher : this.getMatchers(direction)) {
-                        if (matcher == null)
+                    for (final ItemMatcher matcher : getMatchers(direction)) {
+                        if (matcher == null) {
                             continue;
+                        }
                         if (matcher.match(item)) {
                             for (int i = 0; i < 3; i++) {
-                                ItemStack slotContents = brewingStand.getItem(i);
+                                final ItemStack slotContents = brewingStand.getItem(i);
                                 
                                 // Ensure the slot is clear. (No stacking allowed)
                                 if (slotContents != null) {
@@ -47,7 +46,7 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
                                 }
                                 
                                 // Try to remove the item from the cart.
-                                if (!withdraw.removeItem(item.getTypeId(), 1, (short) item.getDurability())) {
+                                if (!withdraw.removeItem(item.getTypeId(), 1, item.getDurability())) {
                                     //Failed, restore backup of inventory
                                     withdraw.setContents(cartContents);
                                     brewingStand.setContents(standContents);
@@ -55,7 +54,7 @@ public class BrewingStandBottomContainer extends GenericItemContainer implements
                                 }
                                 
                                 // Awesome, add it to the stand.
-                                brewingStand.setItem(i, new ItemStack(item.getTypeId(), 1, (short) item.getDurability()));
+                                brewingStand.setItem(i, new ItemStack(item.getTypeId(), 1, item.getDurability()));
                                 
                             }
                         }

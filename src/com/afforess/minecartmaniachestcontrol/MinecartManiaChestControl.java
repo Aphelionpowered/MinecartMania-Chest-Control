@@ -26,9 +26,9 @@ public class MinecartManiaChestControl extends JavaPlugin {
         return instance;
     }
     
-    private static void performStartup(MinecartManiaChestControl instance) {
+    private static void performStartup(final MinecartManiaChestControl instance) {
         setInstance(instance);
-        description=instance.getDescription();
+        description = instance.getDescription();
         server = Bukkit.getServer();
         MinecartManiaConfigurationParser.read(description.getName() + "Configuration.xml", MinecartManiaCore.getDataDirectoryRelativePath(), new ChestControlSettingParser());
         Bukkit.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, listener, Priority.High, instance);
@@ -36,11 +36,11 @@ public class MinecartManiaChestControl extends JavaPlugin {
         
         RecipeManager.init();
     }
-
-    private static void setInstance(MinecartManiaChestControl newInstance) {
-        instance=newInstance;
+    
+    private static void setInstance(final MinecartManiaChestControl newInstance) {
+        instance = newInstance;
     }
-
+    
     public void onDisable() {
         
     }

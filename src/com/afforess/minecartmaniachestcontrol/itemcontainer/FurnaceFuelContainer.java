@@ -7,31 +7,29 @@ import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
 
-public class FurnaceFuelContainer extends GenericItemContainer implements
-        ItemContainer {
+public class FurnaceFuelContainer extends GenericItemContainer implements ItemContainer {
     MinecartManiaFurnace furnace;
     private static final int SLOT = 1;
     
-    public FurnaceFuelContainer(MinecartManiaFurnace furnace, String fuel,
-            CompassDirection direction) {
+    public FurnaceFuelContainer(final MinecartManiaFurnace furnace, String fuel, final CompassDirection direction) {
         super(fuel, direction);
         this.furnace = furnace;
         if (fuel.toLowerCase().contains("fuel")) {
-            String[] split = fuel.split(":");
+            final String[] split = fuel.split(":");
             fuel = "";
-            for (String s : split) {
+            for (final String s : split) {
                 if (!s.toLowerCase().contains("fuel")) {
                     fuel += s + ":";
                 }
             }
         }
-        this.line = fuel;
+        line = fuel;
     }
     
-    public void doCollection(MinecartManiaInventory withdraw) {
-        for (CompassDirection direction : directions) {
-            ItemMatcher[] list = getMatchers(direction);
-            for (ItemMatcher matcher : list) {
+    public void doCollection(final MinecartManiaInventory withdraw) {
+        for (final CompassDirection direction : directions) {
+            final ItemMatcher[] list = getMatchers(direction);
+            for (final ItemMatcher matcher : list) {
                 if (matcher != null) {
                     for (int i = 0; i < withdraw.size(); i++) {
                         if (withdraw.getItem(i) != null) {
@@ -40,13 +38,13 @@ public class FurnaceFuelContainer extends GenericItemContainer implements
                                 continue;
                             }
                             // Figure out exactly what we matched.
-                            ItemStack item = withdraw.getItem(i).clone();
-                            if(item.getAmount()==-1) {
+                            final ItemStack item = withdraw.getItem(i).clone();
+                            if (item.getAmount() == -1) {
                                 item.setAmount(64);
                             }
                             
-                            int available = withdraw.amount(item.getTypeId(), item.getDurability());
-                            int requested = matcher.getAmount(available);
+                            final int available = withdraw.amount(item.getTypeId(), item.getDurability());
+                            final int requested = matcher.getAmount(available);
                             
                             // Determine how much we need to fill the requirements of the system.
                             int toAdd = Math.min(requested, available);
@@ -56,11 +54,11 @@ public class FurnaceFuelContainer extends GenericItemContainer implements
                             if (furnace.getItem(SLOT) != null) {
                                 
                                 // Figure out what it is...
-                                ItemStack catalyst = furnace.getItem(SLOT);
+                                final ItemStack catalyst = furnace.getItem(SLOT);
                                 
                                 // If it's what we want to put in there anyway, adjust our transaction amount accordingly
-                                if (catalyst.getTypeId() == item.getTypeId() && catalyst.getDurability() == item.getDurability()) {
-                                    toAdd = Math.min(0,Math.min(64 - catalyst.getAmount(), toAdd)); 
+                                if ((catalyst.getTypeId() == item.getTypeId()) && (catalyst.getDurability() == item.getDurability())) {
+                                    toAdd = Math.min(0, Math.min(64 - catalyst.getAmount(), toAdd));
                                     item.setAmount(catalyst.getAmount() + toAdd);
                                 } else {
                                     // Otherwise, get rid of it.

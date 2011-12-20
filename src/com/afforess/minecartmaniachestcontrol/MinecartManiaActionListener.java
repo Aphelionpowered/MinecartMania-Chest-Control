@@ -25,95 +25,98 @@ import com.afforess.minecartmaniacore.utils.ComparableLocation;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 
-public class MinecartManiaActionListener extends MinecartManiaListener{
-	
-	public void onChestPoweredEvent(ChestPoweredEvent event) {
-		if (event.isPowered() && !event.isActionTaken()) {
-
-			MinecartManiaChest chest = event.getChest();
-			Material minecartType = SignCommands.getMinecartType(chest);
-			Location spawnLocation = SignCommands.getSpawnLocationSignOverride(chest);
-			if (spawnLocation == null) {
-				spawnLocation = ChestStorage.getSpawnLocation(chest);
-			}
-			if (spawnLocation != null && chest.contains(minecartType)) {
-				if (chest.canSpawnMinecart() && chest.removeItem(minecartType.getId())) {
-					CompassDirection direction = SignCommands.getDirection(chest.getLocation(), spawnLocation);
-					MinecartManiaMinecart minecart = MinecartManiaWorld.spawnMinecart(spawnLocation, minecartType, chest);
-					minecart.setMotion(direction, (Double)MinecartManiaWorld.getConfigurationValue("SpawnAtSpeed"));
-					event.setActionTaken(true);
-				}
-			}
-		}
-	}
-	
-	@Override
-	public void onMinecartManiaSignFoundEvent(MinecartManiaSignFoundEvent event) {
-		Sign sign = event.getSign();
-		SignAction test = new MaximumItemAction(sign);
-		if (test.valid(sign)) {
-			sign.addSignAction(test);
-		}
-		test = new MinimumItemAction(sign);
-		if (test.valid(sign)) {
-			sign.addSignAction(test);
-		}
-	}
-
-	public void onMinecartActionEvent(MinecartActionEvent event) {
-		if (!event.isActionTaken()) {
-			final MinecartManiaMinecart minecart = event.getMinecart();
-			
-			boolean action = false;
-			
-			if (!action) {
-				action = ChestStorage.doMinecartCollection(minecart);
-			}
-			if (!action) {
-				action = ChestStorage.doCollectParallel(minecart);
-			}
-			if (!action && minecart.isStorageMinecart()) {
-
-				ItemCollectionManager.processItemContainer((MinecartManiaStorageCart)event.getMinecart());
-				HashSet<ComparableLocation> locations = calculateLocationsInRange((MinecartManiaStorageCart)event.getMinecart());
-				findSigns(locations);
-				ItemCollectionManager.createItemContainers((MinecartManiaStorageCart)event.getMinecart(), locations);
-				ChestStorage.doItemCompression((MinecartManiaStorageCart) minecart);
-				ChestStorage.doCrafting((MinecartManiaStorageCart) minecart);
-			}
-			event.setActionTaken(action);
-		}
-	}
-	
-	public void onMinecartDirectionChangeEvent(MinecartDirectionChangeEvent event) {
-		if (event.getMinecart().isStorageMinecart()) {
-			ItemCollectionManager.updateContainerDirections((MinecartManiaStorageCart)event.getMinecart());
-		}
-	}
-	
-	private HashSet<ComparableLocation> calculateLocationsInRange(MinecartManiaStorageCart minecart) {
-		HashSet<ComparableLocation> previousBlocks = toComparableLocation(BlockUtils.getAdjacentLocations(minecart.getPrevLocation(), minecart.getItemRange()));
-		HashSet<ComparableLocation> current = toComparableLocation(BlockUtils.getAdjacentLocations(minecart.minecart.getLocation(), minecart.getItemRange()));
-		current.removeAll(previousBlocks);
-		return current;
-	}
-	
-	private static HashSet<ComparableLocation> toComparableLocation(HashSet<Location> set) {
-		HashSet<ComparableLocation> newSet = new HashSet<ComparableLocation>(set.size());
-		for (Location loc : set) {
-			newSet.add(new ComparableLocation(loc));
-		}
-		return newSet;
-	}
-	
-	private void findSigns(Collection<ComparableLocation> locations) {
-		Iterator<ComparableLocation> i = locations.iterator();
-		while (i.hasNext()) {
-			Location temp = i.next();
-			if (!(temp.getBlock().getState() instanceof org.bukkit.block.Sign)) {
-				i.remove();
-			}
-		}
-	}
-
+public class MinecartManiaActionListener extends MinecartManiaListener {
+    
+    @Override
+    public void onChestPoweredEvent(final ChestPoweredEvent event) {
+        if (event.isPowered() && !event.isActionTaken()) {
+            
+            final MinecartManiaChest chest = event.getChest();
+            final Material minecartType = SignCommands.getMinecartType(chest);
+            Location spawnLocation = SignCommands.getSpawnLocationSignOverride(chest);
+            if (spawnLocation == null) {
+                spawnLocation = ChestStorage.getSpawnLocation(chest);
+            }
+            if ((spawnLocation != null) && chest.contains(minecartType)) {
+                if (chest.canSpawnMinecart() && chest.removeItem(minecartType.getId())) {
+                    final CompassDirection direction = SignCommands.getDirection(chest.getLocation(), spawnLocation);
+                    final MinecartManiaMinecart minecart = MinecartManiaWorld.spawnMinecart(spawnLocation, minecartType, chest);
+                    minecart.setMotion(direction, (Double) MinecartManiaWorld.getConfigurationValue("SpawnAtSpeed"));
+                    event.setActionTaken(true);
+                }
+            }
+        }
+    }
+    
+    @Override
+    public void onMinecartManiaSignFoundEvent(final MinecartManiaSignFoundEvent event) {
+        final Sign sign = event.getSign();
+        SignAction test = new MaximumItemAction(sign);
+        if (test.valid(sign)) {
+            sign.addSignAction(test);
+        }
+        test = new MinimumItemAction(sign);
+        if (test.valid(sign)) {
+            sign.addSignAction(test);
+        }
+    }
+    
+    @Override
+    public void onMinecartActionEvent(final MinecartActionEvent event) {
+        if (!event.isActionTaken()) {
+            final MinecartManiaMinecart minecart = event.getMinecart();
+            
+            boolean action = false;
+            
+            if (!action) {
+                action = ChestStorage.doMinecartCollection(minecart);
+            }
+            if (!action) {
+                action = ChestStorage.doCollectParallel(minecart);
+            }
+            if (!action && minecart.isStorageMinecart()) {
+                
+                ItemCollectionManager.processItemContainer((MinecartManiaStorageCart) event.getMinecart());
+                final HashSet<ComparableLocation> locations = calculateLocationsInRange((MinecartManiaStorageCart) event.getMinecart());
+                findSigns(locations);
+                ItemCollectionManager.createItemContainers((MinecartManiaStorageCart) event.getMinecart(), locations);
+                ChestStorage.doItemCompression((MinecartManiaStorageCart) minecart);
+                ChestStorage.doCrafting((MinecartManiaStorageCart) minecart);
+            }
+            event.setActionTaken(action);
+        }
+    }
+    
+    @Override
+    public void onMinecartDirectionChangeEvent(final MinecartDirectionChangeEvent event) {
+        if (event.getMinecart().isStorageMinecart()) {
+            ItemCollectionManager.updateContainerDirections((MinecartManiaStorageCart) event.getMinecart());
+        }
+    }
+    
+    private HashSet<ComparableLocation> calculateLocationsInRange(final MinecartManiaStorageCart minecart) {
+        final HashSet<ComparableLocation> previousBlocks = toComparableLocation(BlockUtils.getAdjacentLocations(minecart.getPrevLocation(), minecart.getItemRange()));
+        final HashSet<ComparableLocation> current = toComparableLocation(BlockUtils.getAdjacentLocations(minecart.minecart.getLocation(), minecart.getItemRange()));
+        current.removeAll(previousBlocks);
+        return current;
+    }
+    
+    private static HashSet<ComparableLocation> toComparableLocation(final HashSet<Location> set) {
+        final HashSet<ComparableLocation> newSet = new HashSet<ComparableLocation>(set.size());
+        for (final Location loc : set) {
+            newSet.add(new ComparableLocation(loc));
+        }
+        return newSet;
+    }
+    
+    private void findSigns(final Collection<ComparableLocation> locations) {
+        final Iterator<ComparableLocation> i = locations.iterator();
+        while (i.hasNext()) {
+            final Location temp = i.next();
+            if (!(temp.getBlock().getState() instanceof org.bukkit.block.Sign)) {
+                i.remove();
+            }
+        }
+    }
+    
 }

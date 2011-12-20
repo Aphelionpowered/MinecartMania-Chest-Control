@@ -11,7 +11,7 @@ public abstract class GenericItemContainer implements ItemContainer {
     protected String line;
     protected final HashSet<CompassDirection> directions = new HashSet<CompassDirection>(4);
     
-    public GenericItemContainer(String line, CompassDirection direction) {
+    public GenericItemContainer(final String line, final CompassDirection direction) {
         directions.add(direction);
         this.line = line;
     }
@@ -28,16 +28,16 @@ public abstract class GenericItemContainer implements ItemContainer {
         return ItemUtils.getItemStringToMaterial(line);
     }
     
-    public ItemMatcher[] getMatchers(CompassDirection direction) {
+    public ItemMatcher[] getMatchers(final CompassDirection direction) {
         return ItemUtils.getItemStringToMatchers(line, direction);
     }
     
-    public SpecificMaterial[] getItemList(CompassDirection direction) {
-        String[] list = { line };
+    public SpecificMaterial[] getItemList(final CompassDirection direction) {
+        final String[] list = { line };
         return ItemUtils.getItemStringListToMaterial(list, direction);
     }
     
-    public void addDirection(CompassDirection direction) {
+    public void addDirection(final CompassDirection direction) {
         if (hasDirectionCondition()) {
             directions.add(direction);
         }

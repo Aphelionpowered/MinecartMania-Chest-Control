@@ -23,52 +23,47 @@ import com.afforess.minecartmaniacore.world.SpecificMaterial;
 
 public abstract class ChestStorage {
     
-    public static Location getSpawnLocation(MinecartManiaChest chest) {
-        Block center = chest.getLocation().getBlock();
+    public static Location getSpawnLocation(final MinecartManiaChest chest) {
+        final Block center = chest.getLocation().getBlock();
         Location result = getAdjacentTrack(center);
-        if (result == null && chest.getNeighborChest() != null) {
+        if ((result == null) && (chest.getNeighborChest() != null)) {
             result = getAdjacentTrack(chest.getNeighborChest().getLocation().getBlock());
         }
         return result;
     }
     
-    private static Location getAdjacentTrack(Block center) {
-        if (MinecartUtils.isTrack(center.getRelative(-1, 0, 0))) {
+    private static Location getAdjacentTrack(final Block center) {
+        if (MinecartUtils.isTrack(center.getRelative(-1, 0, 0)))
             return center.getRelative(-1, 0, 0).getLocation();
-        } else if (MinecartUtils.isTrack(center.getRelative(-1, -1, 0)) && MinecartUtils.isSlopedTrack(center.getRelative(-1, -1, 0))) {
+        else if (MinecartUtils.isTrack(center.getRelative(-1, -1, 0)) && MinecartUtils.isSlopedTrack(center.getRelative(-1, -1, 0)))
             return center.getRelative(-1, 0, 0).getLocation();
-        }
-        if (MinecartUtils.isTrack(center.getRelative(0, 0, -1))) {
+        if (MinecartUtils.isTrack(center.getRelative(0, 0, -1)))
             return center.getRelative(0, 0, -1).getLocation();
-        } else if (MinecartUtils.isTrack(center.getRelative(0, -1, -1)) && MinecartUtils.isSlopedTrack(center.getRelative(0, -1, -1))) {
+        else if (MinecartUtils.isTrack(center.getRelative(0, -1, -1)) && MinecartUtils.isSlopedTrack(center.getRelative(0, -1, -1)))
             return center.getRelative(0, 0, -1).getLocation();
-        }
-        if (MinecartUtils.isTrack(center.getRelative(1, 0, 0))) {
+        if (MinecartUtils.isTrack(center.getRelative(1, 0, 0)))
             return center.getRelative(1, 0, 0).getLocation();
-        } else if (MinecartUtils.isTrack(center.getRelative(1, -1, 0)) && MinecartUtils.isSlopedTrack(center.getRelative(1, -1, 0))) {
+        else if (MinecartUtils.isTrack(center.getRelative(1, -1, 0)) && MinecartUtils.isSlopedTrack(center.getRelative(1, -1, 0)))
             return center.getRelative(1, 0, 0).getLocation();
-        }
-        if (MinecartUtils.isTrack(center.getRelative(0, 0, 1))) {
+        if (MinecartUtils.isTrack(center.getRelative(0, 0, 1)))
             return center.getRelative(0, 0, 1).getLocation();
-        } else if (MinecartUtils.isTrack(center.getRelative(0, -1, 1)) && MinecartUtils.isSlopedTrack(center.getRelative(0, -1, 1))) {
+        else if (MinecartUtils.isTrack(center.getRelative(0, -1, 1)) && MinecartUtils.isSlopedTrack(center.getRelative(0, -1, 1)))
             return center.getRelative(0, 0, 1).getLocation();
-        }
         return null;
     }
     
-    public static boolean doMinecartCollection(MinecartManiaMinecart minecart) {
+    public static boolean doMinecartCollection(final MinecartManiaMinecart minecart) {
         if (minecart.getBlockTypeAhead() != null) {
             if (minecart.getBlockTypeAhead().getType().getId() == Material.CHEST.getId()) {
-                MinecartManiaChest chest = MinecartManiaWorld.getMinecartManiaChest((Chest) minecart.getBlockTypeAhead().getState());
+                final MinecartManiaChest chest = MinecartManiaWorld.getMinecartManiaChest((Chest) minecart.getBlockTypeAhead().getState());
                 
-                if (SignCommands.isNoCollection(chest)) {
+                if (SignCommands.isNoCollection(chest))
                     return false;
-                }
                 
                 if (minecart instanceof MinecartManiaStorageCart) {
-                    MinecartManiaStorageCart storageCart = (MinecartManiaStorageCart) minecart;
+                    final MinecartManiaStorageCart storageCart = (MinecartManiaStorageCart) minecart;
                     boolean failed = false;
-                    for (ItemStack item : storageCart.getInventory().getContents()) {
+                    for (final ItemStack item : storageCart.getInventory().getContents()) {
                         if (!chest.addItem(item)) {
                             failed = true;
                             break;
@@ -88,13 +83,13 @@ public abstract class ChestStorage {
         return false;
     }
     
-    public static boolean doCollectParallel(MinecartManiaMinecart minecart) {
-        ArrayList<Block> blockList = minecart.getParallelBlocks();
-        for (Block block : blockList) {
+    public static boolean doCollectParallel(final MinecartManiaMinecart minecart) {
+        final ArrayList<Block> blockList = minecart.getParallelBlocks();
+        for (final Block block : blockList) {
             if (block.getState() instanceof Chest) {
-                MinecartManiaChest chest = MinecartManiaWorld.getMinecartManiaChest((Chest) block.getState());
-                ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(chest.getLocation(), 1);
-                for (Sign sign : signList) {
+                final MinecartManiaChest chest = MinecartManiaWorld.getMinecartManiaChest((Chest) block.getState());
+                final ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(chest.getLocation(), 1);
+                for (final Sign sign : signList) {
                     for (int i = 0; i < sign.getNumLines(); i++) {
                         if (sign.getLine(i).toLowerCase().contains("parallel")) {
                             sign.setLine(i, "[Parallel]");
@@ -112,7 +107,7 @@ public abstract class ChestStorage {
         return false;
     }
     
-    private static int getNumItemsInBlock(Material m) {
+    private static int getNumItemsInBlock(final Material m) {
         switch (m) {
             case CLAY_BALL:
             case SNOW_BALL:
@@ -123,75 +118,80 @@ public abstract class ChestStorage {
         }
     }
     
-    public static void debug(MinecartManiaStorageCart minecart, String msg) {
-        if (minecart.getDataValue("MMDebug") != null)
+    public static void debug(final MinecartManiaStorageCart minecart, final String msg) {
+        if (minecart.getDataValue("MMDebug") != null) {
             System.out.println(msg);
+        }
     }
     
-    public static void doCrafting(MinecartManiaStorageCart minecart) {
+    public static void doCrafting(final MinecartManiaStorageCart minecart) {
         //Efficiency. Don't process overlapping tiles repeatedly, waste of time
-        int interval = minecart.getDataValue("Craft Interval") == null ? -1 : (Integer) minecart.getDataValue("Farm Interval");
+        final int interval = minecart.getDataValue("Craft Interval") == null ? -1 : (Integer) minecart.getDataValue("Farm Interval");
         if (interval > 0) {
             minecart.setDataValue("Craft Interval", interval - 1);
         } else {
             minecart.setDataValue("Craft Interval", minecart.getRange() / 2);
-            HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
-            for (Block block : blockList) {
+            final HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
+            for (final Block block : blockList) {
                 if (block.getTypeId() == Material.WORKBENCH.getId()) {
-                    ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
-                    for (Sign sign : signList) {
+                    final ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
+                    for (final Sign sign : signList) {
                         if (sign.getLine(0).toLowerCase().contains("craft items")) {
                             sign.setLine(0, "[Craft Items]");
                             // For each line on the sign
                             String itemListString = "";
                             for (int i = 1; i < sign.getNumLines(); i++) {
-                                if (i > 1)
+                                if (i > 1) {
                                     itemListString += ":";
+                                }
                                 itemListString += sign.getLine(i);
                             }
-                            for (SpecificMaterial item : ItemUtils.getItemStringListToMaterial(itemListString.split(":"))) {
+                            for (final SpecificMaterial item : ItemUtils.getItemStringListToMaterial(itemListString.split(":"))) {
                                 // Get the recipe, if possible
-                                RecipeData recipe = RecipeManager.findRecipe(item);
+                                final RecipeData recipe = RecipeManager.findRecipe(item);
                                 
-                                if (recipe == null)
+                                if (recipe == null) {
                                     continue; // Skip if we can't find it.
-                                if (recipe.ingredients == null || recipe.ingredients.size() == 0)
+                                }
+                                if ((recipe.ingredients == null) || (recipe.ingredients.size() == 0)) {
                                     continue;
+                                }
                                 
                                 boolean outOfIngredients = false;
                                 
                                 int loops = 0;
                                 
-                                List<ItemStack> fixedIngredients = new ArrayList<ItemStack>();
+                                final List<ItemStack> fixedIngredients = new ArrayList<ItemStack>();
                                 
                                 debug(minecart, "RECIPE: " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")");
                                 // Until we're out of ingredients, or the loop has been executed 64 times.
-                                while (!outOfIngredients && loops < 64) {
+                                while (!outOfIngredients && (loops < 64)) {
                                     fixedIngredients.clear();
                                     
                                     loops++;
                                     // Loop through the list of ingredients for this recipe
-                                    for (ItemStack stack : recipe.ingredients) {
+                                    for (final ItemStack stack : recipe.ingredients) {
                                         boolean found = false;
                                         
                                         if (stack.getDurability() == (short) -1) {
                                             // See what we have
                                             ItemStack subitem = null;
                                             for (int is = 0; is < minecart.size(); is++) {
-                                                ItemStack si = minecart.getItem(is);
-                                                if (si != null && si.getTypeId() == stack.getTypeId()) {
+                                                final ItemStack si = minecart.getItem(is);
+                                                if ((si != null) && (si.getTypeId() == stack.getTypeId())) {
                                                     subitem = si;
                                                     break;
                                                 }
                                                 
                                             }
-                                            if (subitem == null)
+                                            if (subitem == null) {
                                                 continue;
+                                            }
                                             stack.setDurability(subitem.getDurability());
                                             
                                             // See if we have the needed ingredient
-                                            int num = minecart.amount(stack.getTypeId(),stack.getDurability());
-                                            if (minecart.amount(stack.getTypeId(),stack.getDurability()) < stack.getAmount()) {
+                                            final int num = minecart.amount(stack.getTypeId(), stack.getDurability());
+                                            if (minecart.amount(stack.getTypeId(), stack.getDurability()) < stack.getAmount()) {
                                                 continue;
                                             } else {
                                                 debug(minecart, "Cart has " + num + " " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")!");
@@ -204,7 +204,7 @@ public abstract class ChestStorage {
                                             }
                                             
                                             // See if we have the needed ingredients
-                                            if (minecart.amount(stack.getTypeId(),stack.getDurability()) >= stack.getAmount()) {
+                                            if (minecart.amount(stack.getTypeId(), stack.getDurability()) >= stack.getAmount()) {
                                                 found = true;
                                             } else {
                                                 debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
@@ -222,12 +222,13 @@ public abstract class ChestStorage {
                                         }
                                     }
                                     
-                                    if (outOfIngredients)
+                                    if (outOfIngredients) {
                                         break;
+                                    }
                                     
                                     // Double-check
                                     debug(minecart, "Recipe for " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")");
-                                    for (ItemStack stack : fixedIngredients) {
+                                    for (final ItemStack stack : fixedIngredients) {
                                         if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
                                             debug(minecart, " + " + stack.toString() + " (d: " + stack.getDurability() + ")");
                                         } else {
@@ -237,8 +238,9 @@ public abstract class ChestStorage {
                                         }
                                     }
                                     
-                                    if (outOfIngredients)
+                                    if (outOfIngredients) {
                                         break;
+                                    }
                                     
                                     if (!minecart.canAddItem(recipe.results)) {
                                         debug(minecart, "CAI: " + recipe.results.toString());
@@ -247,7 +249,7 @@ public abstract class ChestStorage {
                                     }
                                     
                                     // Loop through again to actually remove the items
-                                    for (ItemStack stack : fixedIngredients) {
+                                    for (final ItemStack stack : fixedIngredients) {
                                         debug(minecart, "[Craft Items] Removed " + stack.toString() + " (d: " + stack.getDurability() + ") from minecart!");
                                         minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability());
                                     }
@@ -263,34 +265,32 @@ public abstract class ChestStorage {
         }
     }
     
-    public static void doItemCompression(MinecartManiaStorageCart minecart) {
-        HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
-        for (Block block : blockList) {
+    public static void doItemCompression(final MinecartManiaStorageCart minecart) {
+        final HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
+        for (final Block block : blockList) {
             if (block.getTypeId() == Material.WORKBENCH.getId()) {
-                ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
-                for (Sign sign : signList) {
+                final ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
+                for (final Sign sign : signList) {
                     for (int i = 0; i < sign.getNumLines(); i++) {
                         if (sign.getLine(i).toLowerCase().contains("compress items") || sign.getLine(i).toLowerCase().contains("compress")) {
                             sign.setLine(i, "[Compress Items]");
                             //TODO handling for custom recipies?
-                            Material[][] compressable = { 
-                                    { Material.IRON_INGOT, Material.GOLD_INGOT, Material.INK_SACK, Material.DIAMOND, Material.CLAY_BALL, Material.SNOW_BALL }, 
-                                    { Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.LAPIS_BLOCK, Material.DIAMOND_BLOCK, Material.CLAY, Material.SNOW_BLOCK } };
+                            final Material[][] compressable = { { Material.IRON_INGOT, Material.GOLD_INGOT, Material.INK_SACK, Material.DIAMOND, Material.CLAY_BALL, Material.SNOW_BALL }, { Material.IRON_BLOCK, Material.GOLD_BLOCK, Material.LAPIS_BLOCK, Material.DIAMOND_BLOCK, Material.CLAY, Material.SNOW_BLOCK } };
                             int n = 0;
-                            for (Material m : compressable[0]) {
-                                ItemStack masItem=new ItemStack(m.getId(),(Material.INK_SACK==m) ? 4 : 0);
-                                int amtPerBlock = getNumItemsInBlock(m);
+                            for (final Material m : compressable[0]) {
+                                final ItemStack masItem = new ItemStack(m.getId(), (Material.INK_SACK == m) ? 4 : 0);
+                                final int amtPerBlock = getNumItemsInBlock(m);
                                 int amt = 0;
                                 int slot = 0;
-                                for (ItemStack item : minecart.getContents()) {
-                                    if (item != null && item.getTypeId()==masItem.getTypeId() && item.getDurability()==masItem.getDurability()) {
+                                for (final ItemStack item : minecart.getContents()) {
+                                    if ((item != null) && (item.getTypeId() == masItem.getTypeId()) && (item.getDurability() == masItem.getDurability())) {
                                         amt += item.getAmount();
                                         minecart.setItem(slot, null);
                                     }
                                     slot++;
                                 }
                                 int compressedAmt = amt / amtPerBlock;
-                                int left = amt % amtPerBlock;
+                                final int left = amt % amtPerBlock;
                                 while (compressedAmt > 0) {
                                     minecart.addItem(compressable[1][n].getId(), Math.min(64, compressedAmt));
                                     compressedAmt -= Math.min(64, compressedAmt);

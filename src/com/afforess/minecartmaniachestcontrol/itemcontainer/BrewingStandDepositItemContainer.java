@@ -7,34 +7,32 @@ import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
 
-public class BrewingStandDepositItemContainer extends GenericItemContainer
-        implements ItemContainer {
+public class BrewingStandDepositItemContainer extends GenericItemContainer implements ItemContainer {
     
-    private MinecartManiaBrewingStand brewingStand;
+    private final MinecartManiaBrewingStand brewingStand;
     
-    public BrewingStandDepositItemContainer(
-            MinecartManiaBrewingStand brewingStand, String line,
-            CompassDirection direction) {
+    public BrewingStandDepositItemContainer(final MinecartManiaBrewingStand brewingStand, final String line, final CompassDirection direction) {
         super(line, direction);
         this.brewingStand = brewingStand;
     }
     
-    public void doCollection(MinecartManiaInventory deposit) {
-        ItemStack[] cartContents = deposit.getContents();
-        ItemStack[] standContents = brewingStand.getContents();
-        for (CompassDirection direction : directions) {
-            ItemMatcher[] list = getMatchers(direction);
-            for (ItemMatcher item : list) {
+    public void doCollection(final MinecartManiaInventory deposit) {
+        final ItemStack[] cartContents = deposit.getContents();
+        final ItemStack[] standContents = brewingStand.getContents();
+        for (final CompassDirection direction : directions) {
+            final ItemMatcher[] list = getMatchers(direction);
+            for (final ItemMatcher item : list) {
                 if (item != null) {
                     for (int i = 0; i < 3; i++) {
-                        ItemStack slotContents = brewingStand.getItem(i);
+                        final ItemStack slotContents = brewingStand.getItem(i);
                         
                         // Slot MUST NOT be empty.
-                        if (slotContents == null)
+                        if (slotContents == null) {
                             continue;
+                        }
                         
                         //does not match the item already in the slot, or isn't an item we want so, continue
-                        if (brewingStand.getItem(i) == null || !item.match(brewingStand.getItem(i))) {
+                        if ((brewingStand.getItem(i) == null) || !item.match(brewingStand.getItem(i))) {
                             continue;
                         }
                         
