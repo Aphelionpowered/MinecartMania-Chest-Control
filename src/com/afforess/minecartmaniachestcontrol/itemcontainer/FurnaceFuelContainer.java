@@ -33,22 +33,52 @@ public class FurnaceFuelContainer extends GenericItemContainer implements
             ItemMatcher[] list = getMatchers(direction);
             for (ItemMatcher matcher : list) {
                 if (matcher != null) {
-                    //does not match the item already in the slot, continue
-                    if (furnace.getItem(SLOT) != null && !matcher.match(furnace.getItem(SLOT))) {
-                        continue;
-                    }
-                    if (furnace.getItem(SLOT) != null) {
-                        ItemStack transfer = furnace.getItem(SLOT).clone();
-                        int available = withdraw.amount(transfer.getTypeId(), transfer.getDurability());
-                        int toAdd = Math.min(matcher.getAmount(available), available);
-                        transfer.setAmount(toAdd);
-                        toAdd = Math.min(64 - furnace.getItem(SLOT).getAmount(), toAdd);
-                        transfer.setAmount(furnace.getItem(SLOT).getAmount() + toAdd);
-                        if (withdraw.contains(transfer.getTypeId(), transfer.getDurability()) && withdraw.canRemoveItem(transfer.getTypeId(), toAdd, transfer.getDurability())) {
-                            if (furnace.canAddItem(transfer)) {
-                                withdraw.removeItem(transfer.getTypeId(), toAdd, transfer.getDurability());
-                                furnace.setItem(SLOT, transfer);
-                                return;
+                    for (int i = 0; i < withdraw.size(); i++) {
+                        if (withdraw.getItem(i) != null) {
+                            // Try to match up what we need with what we have.
+                            if (!matcher.match(withdraw.getItem(i))) {
+                                continue;
+                            }
+                            // Figure out exactly what we matched.
+                            ItemStack item = withdraw.getItem(i).clone();
+                            if(item.getAmount()==-1) {
+                                item.setAmount(64);
+                            }
+                            
+                            int available = withdraw.amount(item.getTypeId(), item.getDurability());
+                            int requested = matcher.getAmount(available);
+                            
+                            // Determine how much we need to fill the requirements of the system.
+                            int toAdd = Math.min(requested, available);
+                            item.setAmount(toAdd);
+                            
+                            // If the furnace has stuff in the catalyst slot already...
+                            if (furnace.getItem(SLOT) != null) {
+                                
+                                // Figure out what it is...
+                                ItemStack catalyst = furnace.getItem(SLOT);
+                                
+                                // If it's what we want to put in there anyway, adjust our transaction amount accordingly
+                                if (catalyst.getTypeId() == item.getTypeId() && catalyst.getDurability() == item.getDurability()) {
+                                    toAdd = Math.min(64 - catalyst.getAmount(), toAdd);
+                                    item.setAmount(catalyst.getAmount() + toAdd);
+                                } else {
+                                    // Otherwise, get rid of it.
+                                    if (furnace.canRemoveItem(catalyst.getTypeId(), catalyst.getAmount(), catalyst.getDurability())) {
+                                        if (withdraw.canAddItem(catalyst)) {
+                                            furnace.removeItem(catalyst.getTypeId(), catalyst.getAmount(), catalyst.getDurability());
+                                            furnace.setItem(SLOT, null);
+                                        }
+                                    }
+                                    
+                                }
+                            }
+                            if (withdraw.contains(item.getTypeId()) && withdraw.canRemoveItem(item.getTypeId(), toAdd, item.getDurability())) {
+                                if (furnace.canAddItem(item)) {
+                                    withdraw.removeItem(item.getTypeId(), toAdd, item.getDurability());
+                                    furnace.setItem(SLOT, item);
+                                    return;
+                                }
                             }
                         }
                     }

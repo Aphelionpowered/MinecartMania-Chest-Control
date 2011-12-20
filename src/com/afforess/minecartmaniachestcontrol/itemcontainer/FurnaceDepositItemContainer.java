@@ -19,31 +19,35 @@ public class FurnaceDepositItemContainer extends GenericItemContainer implements
     }
     
     public void doCollection(MinecartManiaInventory deposit) {
+        ItemStack[] cartContents = deposit.getContents();
+        ItemStack[] standContents = furnace.getContents();
         for (CompassDirection direction : directions) {
             ItemMatcher[] list = getMatchers(direction);
-            for (ItemMatcher matcher : list) {
-                if (matcher != null) {
-                    if (furnace.getItem(SLOT) != null && matcher.match(furnace.getItem(SLOT))) {
-                        
-                        int toRemove = furnace.getItem(SLOT).getAmount();
-                        if (matcher.getAmount(toRemove) < toRemove) {
-                            toRemove = matcher.getAmount(toRemove);
-                        }
-                        ItemStack transfer = furnace.getItem(SLOT).clone();
-                        transfer.setAmount(toRemove);
-                        if (furnace.canRemoveItem(transfer.getTypeId(), toRemove, transfer.getDurability())) {
-                            if (deposit.canAddItem(transfer)) {
-                                if (deposit.addItem(transfer)) {
-                                    furnace.setItem(SLOT, null);
-                                } else {
-                                    return;
-                                }
-                            }
-                        }
+            for (ItemMatcher item : list) {
+                if (item != null) {
+                    ItemStack slotContents = furnace.getItem(SLOT);
+                    
+                    // Slot MUST NOT be empty.
+                    if (slotContents == null)
+                        continue;
+                    
+                    //does not match the item already in the slot, or isn't an item we want so, continue
+                    if (furnace.getItem(SLOT) == null || !item.match(furnace.getItem(SLOT))) {
+                        continue;
                     }
+                    
+                    // See if we can add this crap to the Minecart.
+                    if (!deposit.addItem(slotContents)) {
+                        //Failed, restore backup of inventory
+                        deposit.setContents(cartContents);
+                        furnace.setContents(standContents);
+                        return;
+                    }
+                    
+                    // Now remove the slot contents.
+                    furnace.setItem(SLOT, null);
                 }
             }
         }
     }
-    
 }
