@@ -22,14 +22,8 @@ public class MinimumItemAction implements SignAction {
             for (ItemMatcher matcher : matchers) {
                 if (matcher == null)
                     continue;
-                for (int i = 0; i < ((MinecartManiaStorageCart) minecart).size(); i++) {
-                    ItemStack item = ((MinecartManiaStorageCart) minecart).getItem(i);
-                    if (item == null)
-                        continue;
-                    if (matcher.match(item)) {
-                        ((MinecartManiaStorageCart) minecart).setMinimumItem(item.getTypeId(), item.getDurability(), matcher.getAmount(0));
-                    }
-                }
+                ((MinecartManiaStorageCart) minecart).setMinimumItem(matcher);
+                
             }
             return true;
         }
