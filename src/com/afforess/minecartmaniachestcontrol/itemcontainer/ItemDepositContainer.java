@@ -5,6 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
+import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 
 public class ItemDepositContainer extends GenericItemContainer implements ItemContainer {
     private final MinecartManiaInventory inventory;
@@ -16,34 +17,50 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
     
     public void doCollection(final MinecartManiaInventory deposit) {
         final ItemStack[] cartContents = deposit.getContents();
-        final ItemStack[] standContents = inventory.getContents();
+        final ItemStack[] chestContents = inventory.getContents();
         for (final CompassDirection direction : directions) {
-            final ItemMatcher[] list = getMatchers(direction);
-            for (int idx = 0; idx < standContents.length; idx++) {
-                for (final ItemMatcher item : list) {
-                    if (item != null) {
-                        final ItemStack slotContents = inventory.getItem(idx);
-                        
-                        // Slot MUST NOT be empty.
-                        if (slotContents == null) {
+            for (final ItemStack item : chestContents) {
+                if (item != null) {
+                    for (final ItemMatcher matcher : getMatchers(direction)) {
+                        if (matcher == null) {
                             continue;
                         }
                         
-                        //does not match the item already in the slot, or isn't an item we want so, continue
-                        if ((inventory.getItem(idx) == null) || !item.match(inventory.getItem(idx))) {
-                            continue;
+                        if (matcher.match(item)) {
+                            for (int i = 0; i < cartContents.length; i++) {
+                                final ItemStack slotContents = deposit.getItem(i);
+                                
+                                // Get the amount we want to add to the slot
+                                int amount = item.getAmount();
+                                
+                                // Get the maximum stack size (or just 64 if we've disabled that)
+                                int maxamount = MinecartManiaWorld.getMaxStackSize(item);
+                                
+                                // Non-empty slot
+                                if (slotContents != null) {
+                                    // Ensure we have the same ID and durability and enchantments
+                                    if (slotContents.getTypeId() == item.getTypeId() && slotContents.getDurability() == item.getDurability() && slotContents.getEnchantments() == item.getEnchantments()) {
+                                        
+                                        // Figure out how much we have to add to complete the stack.
+                                        amount = Math.min(amount, Math.max(0, maxamount - amount));
+                                        
+                                    } else {
+                                        // Skip it, not the same.
+                                        continue;
+                                    }
+                                }
+                                // Try to remove the item from the chest.
+                                if (!inventory.removeItem(item.getTypeId(), amount, item.getDurability())) {
+                                    //Failed, restore backup of inventory
+                                    deposit.setContents(cartContents);
+                                    inventory.setContents(chestContents);
+                                    return;
+                                }
+                                
+                                // Awesome, add it to the stand.
+                                deposit.setItem(i, new ItemStack(item.getTypeId(), amount, item.getDurability()));
+                            }
                         }
-                        
-                        // See if we can add this crap to the Minecart.
-                        if (!deposit.addItem(slotContents)) {
-                            //Failed, restore backup of inventory
-                            deposit.setContents(cartContents);
-                            inventory.setContents(standContents);
-                            return;
-                        }
-                        
-                        // Now remove the slot contents.
-                        inventory.setItem(idx, null);
                     }
                 }
             }
