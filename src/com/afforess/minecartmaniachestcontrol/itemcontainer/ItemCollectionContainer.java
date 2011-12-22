@@ -77,13 +77,13 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 if (withdraw.removeItem(item.getTypeId(), amount, item.getDurability())) {
                     // Awesome, add it to the cart.
                     if (inventory.addItem(new ItemStack(item.getTypeId(), amount, item.getDurability()))) {
-                        MinecartManiaLogger.getInstance().info(String.format("[Deposit Items]  Collected %s;%d@%d", item.getTypeId(), amount, item.getDurability()));
+                        MinecartManiaLogger.getInstance().info(String.format("[Collect Items]  Collected %s;%d@%d", item.getTypeId(), amount, item.getDurability()));
                         continue;
                     } else {
                         error = "Failed to add to chest";
                     }
                 } else {
-                    error = "Failed to remove from cart";
+                    error = "Failed to remove from cart: "+withdraw.getFailureReason();
                 }
                 MinecartManiaLogger.getInstance().info(String.format("[Collect Items]  FAILED to collect %s;%d@%d: %s", item.getTypeId(), amount, item.getDurability(), error));
                 //Failed, restore backup of inventory

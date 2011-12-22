@@ -82,7 +82,7 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                         error = "Failed to add to cart";
                     }
                 } else {
-                    error = "Failed to remove from chest";
+                    error = "Failed to remove from chest: "+inventory.getFailureReason();
                 }
                 MinecartManiaLogger.getInstance().info(String.format("[Deposit Items]  FAILED to deposit %s;%d@%d: %s", item.getTypeId(), amount, item.getDurability(), error));
                 //Failed, restore backup of inventory
