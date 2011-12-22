@@ -1,7 +1,6 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import com.afforess.minecartmaniacore.debug.MinecartManiaLogger;
@@ -35,11 +34,12 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                     }
                 }
                 // Nothing matches
-                if (item == null)
+                if (item == null) {
                     continue;
+                }
                 
                 // Get the maximum stack size (or just 64 if we've disabled that)
-                int maxamount = MinecartManiaWorld.getMaxStackSize(item);
+                final int maxamount = MinecartManiaWorld.getMaxStackSize(item);
                 
                 // Get the amount we want to add to the slot
                 int amount = Math.min(withdraw.amount(matcher), matcher.getAmount(Integer.MAX_VALUE));
@@ -52,12 +52,13 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 
                 for (final ItemStack slot : inventory.getContents()) {
                     // Non-empty slot
-                    if (slot != null && slot.getType() != Material.AIR) {
+                    if ((slot != null) && (slot.getType() != Material.AIR)) {
                         // Ensure we have the same ID and durability and enchantments
-                        if (slot.getTypeId() == item.getTypeId() && slot.getDurability() == item.getDurability()) {
+                        if ((slot.getTypeId() == item.getTypeId()) && (slot.getDurability() == item.getDurability())) {
                             //if the slot amount is negative, skip it.
-                            if (slot.getAmount() < 0)
+                            if (slot.getAmount() < 0) {
                                 continue;
+                            }
                             
                             // Figure out how much we have to add to complete the stack.
                             slack += Math.min(maxamount, Math.max(0, maxamount - slot.getAmount()));
@@ -83,7 +84,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                         error = "Failed to add to chest";
                     }
                 } else {
-                    error = "Failed to remove from cart: "+withdraw.getFailureReason();
+                    error = "Failed to remove from cart: " + withdraw.getFailureReason();
                 }
                 MinecartManiaLogger.getInstance().info(String.format("[Collect Items]  FAILED to collect %s;%d@%d: %s", item.getTypeId(), amount, item.getDurability(), error));
                 //Failed, restore backup of inventory
