@@ -3,6 +3,7 @@ package com.afforess.minecartmaniachestcontrol.itemcontainer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import com.afforess.minecartmaniacore.debug.MinecartManiaLogger;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
@@ -70,13 +71,20 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                 }
                 // And finally, add up the number of empty slots (times stack size) and how much slack we have.
                 amount = (emptySlots * maxamount) + slack;
+                String error = "";
                 // Try to remove the items from the chest.
-                if (deposit.removeItem(item.getTypeId(), amount, item.getDurability())) {
+                if (inventory.removeItem(item.getTypeId(), amount, item.getDurability())) {
                     // Awesome, add it to the cart.
-                    if (inventory.addItem(new ItemStack(item.getTypeId(), amount, item.getDurability()))) {
+                    if (deposit.addItem(new ItemStack(item.getTypeId(), amount, item.getDurability()))) {
+                        MinecartManiaLogger.getInstance().info(String.format("[Deposit Items]  Deposited %s;%d@%d", item.getTypeId(), amount, item.getDurability()));
                         continue;
+                    } else {
+                        error = "Failed to add to cart";
                     }
+                } else {
+                    error = "Failed to remove from chest";
                 }
+                MinecartManiaLogger.getInstance().info(String.format("[Deposit Items]  FAILED to deposit %s;%d@%d: %s", item.getTypeId(), amount, item.getDurability(), error));
                 //Failed, restore backup of inventory
                 deposit.setContents(cartContents);
                 inventory.setContents(chestContents);
