@@ -73,6 +73,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 }
                 // And finally, add up the number of empty slots (times stack size) and how much slack we have.
                 amount = (emptySlots * maxamount) + slack;
+                final String amountDebug = String.format("amount = (%d * %d) + %d", emptySlots, maxamount, slack);
                 String error = "";
                 // Try to remove the items from the chest.
                 if (withdraw.removeItem(item.getTypeId(), amount, item.getDurability())) {
@@ -86,6 +87,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 } else {
                     error = "Failed to remove from cart: " + withdraw.getFailureReason();
                 }
+                error += "\n" + amountDebug;
                 MinecartManiaLogger.getInstance().info(String.format("[Collect Items]  FAILED to collect %s;%d@%d: %s", item.getTypeId(), amount, item.getDurability(), error));
                 //Failed, restore backup of inventory
                 withdraw.setContents(cartContents);
