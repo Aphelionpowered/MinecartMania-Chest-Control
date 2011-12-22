@@ -15,26 +15,35 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
     }
     
     public void doCollection(final MinecartManiaInventory deposit) {
+        final ItemStack[] cartContents = deposit.getContents();
+        final ItemStack[] standContents = inventory.getContents();
         for (final CompassDirection direction : directions) {
             final ItemMatcher[] list = getMatchers(direction);
-            for (final ItemMatcher matcher : list) {
-                if (matcher != null) {
-                    for (int i = 0; i < inventory.size(); i++) {
-                        final ItemStack itemStack = inventory.getItem(i);
-                        if (itemStack != null) {
-                            int amount = matcher.getAmount(inventory.amount(itemStack.getTypeId(), itemStack.getDurability()));
-                            itemStack.setAmount(amount);
-                            if (matcher.match(itemStack) && (amount > 0)) {
-                                final int toAdd = (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
-                                if (!inventory.canRemoveItem(itemStack.getTypeId(), toAdd, itemStack.getDurability())) {
-                                    break; //if we are not allowed to remove the items, give up
-                                } else if (!deposit.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()))) {
-                                    break;
-                                }
-                                inventory.removeItem(itemStack.getTypeId(), toAdd, itemStack.getDurability());
-                                amount -= toAdd;
-                            }
+            for (int idx = 0; idx < standContents.length; idx++) {
+                for (final ItemMatcher item : list) {
+                    if (item != null) {
+                        final ItemStack slotContents = inventory.getItem(idx);
+                        
+                        // Slot MUST NOT be empty.
+                        if (slotContents == null) {
+                            continue;
                         }
+                        
+                        //does not match the item already in the slot, or isn't an item we want so, continue
+                        if ((inventory.getItem(idx) == null) || !item.match(inventory.getItem(idx))) {
+                            continue;
+                        }
+                        
+                        // See if we can add this crap to the Minecart.
+                        if (!deposit.addItem(slotContents)) {
+                            //Failed, restore backup of inventory
+                            deposit.setContents(cartContents);
+                            inventory.setContents(standContents);
+                            return;
+                        }
+                        
+                        // Now remove the slot contents.
+                        inventory.setItem(idx, null);
                     }
                 }
             }

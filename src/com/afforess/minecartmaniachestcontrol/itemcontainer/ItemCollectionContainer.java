@@ -1,10 +1,7 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
@@ -18,43 +15,36 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
     }
     
     public void doCollection(final MinecartManiaInventory withdraw) {
-        Player owner = null;
-        String temp = null;
-        if (inventory instanceof MinecartManiaChest) {
-            temp = ((MinecartManiaChest) inventory).getOwner();
-        }
-        if (temp != null) {
-            owner = Bukkit.getServer().getPlayer(temp);
-        }
+        final ItemStack[] cartContents = withdraw.getContents();
+        final ItemStack[] standContents = inventory.getContents();
         for (final CompassDirection direction : directions) {
-            final ItemMatcher[] list = getMatchers(direction);
-            for (final ItemMatcher matcher : list) {
-                if (matcher != null) {
-                    for (int i = 0; i < withdraw.size(); i++) {
-                        final ItemStack itemStack = withdraw.getItem(i);
-                        if (itemStack == null) {
+            for (final ItemStack item : cartContents) {
+                if (item != null) {
+                    for (final ItemMatcher matcher : getMatchers(direction)) {
+                        if (matcher == null) {
                             continue;
                         }
-                        int amount = matcher.getAmount(withdraw.amount(itemStack.getTypeId(), itemStack.getDurability()));
-                        
-                        if (matcher.match(itemStack)) {
-                            final int toAdd = itemStack.getAmount() > amount ? amount : itemStack.getAmount();
-                            itemStack.setAmount(toAdd);
-                            if (!withdraw.canRemoveItem(itemStack.getTypeId(), toAdd, itemStack.getDurability())) {
-                                break; //if we are not allowed to remove the items, give up
-                            } else {
-                                try {
-                                    if (!inventory.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()), owner)) {
-                                        break;
-                                    }
-                                } catch (final Exception e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                    break;
+                        if (matcher.match(item)) {
+                            for (int i = 0; i < standContents.length; i++) {
+                                final ItemStack slotContents = inventory.getItem(i);
+                                
+                                // Ensure the slot is clear. (No stacking allowed)
+                                if (slotContents != null) {
+                                    continue; // Skip it.
                                 }
+                                
+                                // Try to remove the item from the cart.
+                                if (!withdraw.removeItem(item.getTypeId(), 1, item.getDurability())) {
+                                    //Failed, restore backup of inventory
+                                    withdraw.setContents(cartContents);
+                                    inventory.setContents(standContents);
+                                    return;
+                                }
+                                
+                                // Awesome, add it to the stand.
+                                inventory.setItem(i, new ItemStack(item.getTypeId(), 1, item.getDurability()));
+                                
                             }
-                            withdraw.removeItem(itemStack.getTypeId(), toAdd, itemStack.getDurability());
-                            amount -= toAdd;
                         }
                     }
                 }
