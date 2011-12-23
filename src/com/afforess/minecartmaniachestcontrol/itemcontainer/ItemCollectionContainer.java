@@ -42,7 +42,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 final int maxamount = MinecartManiaWorld.getMaxStackSize(item);
                 
                 // Get the amount we want to add to the slot
-                int amount = Math.min(withdraw.amount(matcher), matcher.getAmount(Integer.MAX_VALUE));
+                final int amountRequested = Math.min(withdraw.amount(matcher), matcher.getAmount(Integer.MAX_VALUE));
                 
                 // Get the amount of available slots
                 int emptySlots = 0;
@@ -72,8 +72,11 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                     }
                 }
                 // And finally, add up the number of empty slots (times stack size) and how much slack we have.
-                amount = (emptySlots * maxamount) + slack;
-                final String amountDebug = String.format("amount = (%d * %d) + %d", emptySlots, maxamount, slack);
+                // If larger than the amount requested (or the stuff available in the cart), then use the requested number.
+                final int amount = Math.min(amountRequested, (emptySlots * maxamount) + slack);
+                String amountDebug = String.format("amount = (%d * %d) + %d", emptySlots, maxamount, slack);
+                amountDebug += String.format("\nRequested: %d", amountRequested);
+                
                 String error = "";
                 // Try to remove the items from the chest.
                 if (withdraw.removeItem(item.getTypeId(), amount, item.getDurability())) {
