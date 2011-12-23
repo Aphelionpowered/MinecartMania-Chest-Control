@@ -78,8 +78,8 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                 amountDebug += String.format("\nRequested: %d", amountRequested);
                 
                 // If we're going to be removing nothing, then just don't bother.
-                if (amount == 0)
-                    return;
+                if (amount <= 0)
+                    continue;
                 
                 String error = "";
                 // Try to remove the items from the chest.
