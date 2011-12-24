@@ -98,7 +98,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 
                 String error = "";
                 // Try to remove the items from the chest.
-                if (withdraw.removeItem(item.getTypeId(), amount, item.getDurability())) {
+                if (amount > 0 && withdraw.removeItem(item.getTypeId(), amount, item.getDurability())) {
                     // Awesome, add it to the cart.
                     if (inventory.addItem(new ItemStack(item.getTypeId(), amount, item.getDurability()))) {
                         MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s;%d@%d", item.getTypeId(), item.getDurability(), amount));
