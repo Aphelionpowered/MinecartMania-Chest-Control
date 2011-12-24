@@ -76,10 +76,12 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                     continue;
                 
                 // Get the amount we want to add to the slot
-                final int amountRequested = Math.min(withdraw.amount(matcher), matcher.getAmount(amount));
+                int amountInCart = withdraw.amount(matcher);
+                int amountMatcherRequested = matcher.getAmount(amount);
+                final int amountRequested = Math.min(amountInCart, amountMatcherRequested);
                 
                 String amountDebug = String.format("amount = (%d * %d) + %d", emptySlots, maxamount, slack);
-                amountDebug += String.format("\nRequested: %d", amountRequested);
+                amountDebug += String.format("\nRequested: %d = min(cart:%d, matcher:%d)", amountRequested, amountInCart, amountMatcherRequested);
                 
                 amount = amountRequested;
                 // If we're going to be removing nothing, then just don't bother.
