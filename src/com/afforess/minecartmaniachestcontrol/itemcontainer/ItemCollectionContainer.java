@@ -77,7 +77,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 
                 // Get the amount we want to add to the slot
                 int amountInCart = withdraw.amount(matcher);
-                int amountMatcherRequested = matcher.getAmount(amount);
+                int amountMatcherRequested = matcher.getAmount(amountInCart);
                 final int amountRequested = Math.min(amountInCart, amountMatcherRequested);
                 
                 String amountDebug = String.format("amount = (%d * %d) + %d", emptySlots, maxamount, slack);
