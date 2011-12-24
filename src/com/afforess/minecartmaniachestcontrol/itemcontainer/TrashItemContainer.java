@@ -22,7 +22,7 @@ public class TrashItemContainer extends GenericItemContainer implements ItemCont
                         if (itemStack == null) {
                             continue;
                         }
-                        int amount = matcher.getAmount(other.amount(itemStack.getTypeId(), itemStack.getDurability()));
+                        int amount = matcher.getAmount(other.amount(matcher));
                         
                         itemStack.setAmount(amount);
                         while (matcher.match(itemStack) && (amount > 0)) {
