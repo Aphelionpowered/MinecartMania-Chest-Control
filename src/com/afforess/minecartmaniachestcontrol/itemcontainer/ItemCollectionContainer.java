@@ -83,12 +83,12 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                     amount = amountInCart;
                     amountDebug = String.format("amount = %d (matcher not set)", amountInCart);
                 } else {
-                    if (amountInCart > matcher.getAmount(0)) {
-                        amount = matcher.getAmount(0);
-                        amountDebug = String.format("amount = %d (%d > %d)", amount, amountInCart, matcher.getAmount(0));
+                    if (amountInCart > matcher.getAmount(Integer.MAX_VALUE)) {
+                        amount = matcher.getAmount(Integer.MAX_VALUE);
+                        amountDebug = String.format("amount = %d (%d > %d)", amount, amountInCart, matcher.getAmount(Integer.MAX_VALUE));
                     } else {
                         amount = amountInCart;
-                        amountDebug = String.format("amount = %d (%d <= %d)", amount, amountInCart, matcher.getAmount(0));
+                        amountDebug = String.format("amount = %d (%d <= %d)", amount, amountInCart, matcher.getAmount(Integer.MIN_VALUE));
                     }
                 }
                 
