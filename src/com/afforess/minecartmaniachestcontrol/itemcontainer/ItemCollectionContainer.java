@@ -69,7 +69,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 }
                 // And finally, add up the number of empty slots (times stack size) and how much slack we have.
                 // If larger than the amount requested (or the stuff available in the cart), then use the requested number.
-                final int amount = (emptySlots * maxamount) + slack;
+                int amount = (emptySlots * maxamount) + slack;
                 
                 // If there's no room, then just don't bother.
                 if (amount <= 0)
@@ -81,6 +81,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 String amountDebug = String.format("amount = (%d * %d) + %d", emptySlots, maxamount, slack);
                 amountDebug += String.format("\nRequested: %d", amountRequested);
                 
+                amount = amountRequested;
                 // If we're going to be removing nothing, then just don't bother.
                 if (amount <= 0)
                     continue;
