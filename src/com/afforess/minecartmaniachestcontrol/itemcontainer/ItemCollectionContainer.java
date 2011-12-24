@@ -75,15 +75,23 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 if (amount <= 0)
                     continue;
                 
+                String amountDebug = "";
                 // Get the amount we want to add to the slot
                 int amountInCart = withdraw.amount(matcher);
-                int amountMatcherRequested = matcher.getAmount(amountInCart);
-                final int amountRequested = Math.min(amountInCart, amountMatcherRequested);
                 
-                String amountDebug = String.format("amount = (%d * %d) + %d", emptySlots, maxamount, slack);
-                amountDebug += String.format("\nRequested: %d = min(cart:%d, matcher:%d)", amountRequested, amountInCart, amountMatcherRequested);
+                if (!matcher.amountIsSet()) {
+                    amount = amountInCart;
+                    amountDebug = String.format("amount = %d (matcher not set)", amountInCart);
+                } else {
+                    if (amountInCart > matcher.getAmount(0)) {
+                        amount = matcher.getAmount(0);
+                        amountDebug = String.format("amount = %d (%d > %d)", amount, amountInCart, matcher.getAmount(0));
+                    } else {
+                        amount = amountInCart;
+                        amountDebug = String.format("amount = %d (%d <= %d)", amount, amountInCart, matcher.getAmount(0));
+                    }
+                }
                 
-                amount = amountRequested;
                 // If we're going to be removing nothing, then just don't bother.
                 if (amount <= 0)
                     continue;
