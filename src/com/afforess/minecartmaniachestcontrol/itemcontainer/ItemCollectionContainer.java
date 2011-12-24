@@ -29,7 +29,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 // Find the first matching item.
                 for (final ItemStack mySlot : withdraw.getContents().clone()) {
                     if (matcher.match(mySlot)) {
-                        item = mySlot;
+                        item = mySlot.clone();
                         break;
                     }
                 }
@@ -70,6 +70,10 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 // And finally, add up the number of empty slots (times stack size) and how much slack we have.
                 // If larger than the amount requested (or the stuff available in the cart), then use the requested number.
                 final int amount = (emptySlots * maxamount) + slack;
+                
+                // If there's no room, then just don't bother.
+                if (amount <= 0)
+                    continue;
                 
                 // Get the amount we want to add to the slot
                 final int amountRequested = Math.min(withdraw.amount(matcher), matcher.getAmount(amount));
