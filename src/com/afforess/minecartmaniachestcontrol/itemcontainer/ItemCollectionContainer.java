@@ -72,8 +72,8 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 int amount = (emptySlots * maxamount) + slack;
                 
                 // If there's no room, then just don't bother.
-                if (amount <= 0)
-                    continue;
+                //                if (amount <= 0)
+                //                    continue;
                 
                 String amountDebug = "";
                 // Get the amount we want to add to the slot
@@ -93,8 +93,8 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 }
                 
                 // If we're going to be removing nothing, then just don't bother.
-                if (amount <= 0)
-                    continue;
+                //                if (amount <= 0)
+                //                    continue;
                 
                 String error = "";
                 // Try to remove the items from the chest.
