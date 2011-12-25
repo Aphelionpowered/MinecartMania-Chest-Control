@@ -41,9 +41,6 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                 // Get the maximum stack size (or just 64 if we've disabled that)
                 final int maxamount = MinecartManiaWorld.getMaxStackSize(item);
                 
-                // Get the amount we want to add to the slot
-                final int amountRequested = Math.min(inventory.amount(matcher), matcher.getAmount(Integer.MAX_VALUE));
-                
                 // Get the amount of available slots
                 int emptySlots = 0;
                 
@@ -108,7 +105,7 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                         MinecartManiaLogger.getInstance().info(String.format("[Deposit Items]  Deposited %s;%d@%d", item.getTypeId(), item.getDurability(), amount));
                         continue;
                     } else {
-                        error = "Failed to add to cart";
+                        error = "Failed to add to cart: " + deposit.getFailureReason();
                     }
                 } else {
                     error = "Failed to remove from chest: " + inventory.getFailureReason();

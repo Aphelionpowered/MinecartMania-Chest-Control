@@ -40,6 +40,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                 
                 // Get the maximum stack size (or just 64 if we've disabled that)
                 final int maxamount = MinecartManiaWorld.getMaxStackSize(item);
+                
                 // Get the amount of available slots
                 int emptySlots = 0;
                 
@@ -104,7 +105,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                         MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s;%d@%d", item.getTypeId(), item.getDurability(), amount));
                         continue;
                     } else {
-                        error = "Failed to add to chest";
+                        error = "Failed to add to chest: " + inventory.getFailureReason();
                     }
                 } else {
                     error = "Failed to remove from cart: " + withdraw.getFailureReason();
