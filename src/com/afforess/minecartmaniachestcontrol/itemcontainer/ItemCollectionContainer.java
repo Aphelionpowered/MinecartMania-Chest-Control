@@ -1,13 +1,15 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
-import org.bukkit.Material;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.afforess.minecartmaniacore.debug.MinecartManiaLogger;
+import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
-import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 
 public class ItemCollectionContainer extends GenericItemContainer implements ItemContainer {
     private final MinecartManiaInventory inventory;
@@ -18,104 +20,35 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
     }
     
     public void doCollection(final MinecartManiaInventory withdraw) {
-        final ItemStack[] cartContents = withdraw.getContents().clone();
-        final ItemStack[] chestContents = inventory.getContents().clone();
-        for (final CompassDirection direction : directions) {
-            for (final ItemMatcher matcher : getMatchers(direction)) {
-                if (matcher == null) {
-                    continue;
-                }
-                ItemStack item = null;
-                // Find the first matching item.
-                for (final ItemStack mySlot : withdraw.getContents().clone()) {
-                    if (matcher.match(mySlot)) {
-                        item = mySlot.clone();
-                        break;
-                    }
-                }
-                // Nothing matches
-                if (item == null) {
-                    continue;
-                }
-                
-                // Get the maximum stack size (or just 64 if we've disabled that)
-                final int maxamount = MinecartManiaWorld.getMaxStackSize(item);
-                
-                // Get the amount of available slots
-                int emptySlots = 0;
-                
-                // How much room is available in terms of incomplete stacks (<64)
-                int slack = 0;
-                
-                for (final ItemStack slot : inventory.getContents()) {
-                    // Non-empty slot
-                    if ((slot != null) && (slot.getType() != Material.AIR)) {
-                        // Ensure we have the same ID and durability and enchantments
-                        if ((slot.getTypeId() == item.getTypeId()) && (slot.getDurability() == item.getDurability())) {
-                            //if the slot amount is negative, skip it.
-                            if (slot.getAmount() < 0) {
-                                continue;
-                            }
-                            
-                            // Figure out how much we have to add to complete the stack.
-                            slack += Math.min(maxamount, Math.max(0, maxamount - slot.getAmount()));
-                        } else {
-                            // Skip it, not the same.
-                            continue;
+        MinecartManiaLogger.getInstance().debug("Processing Collection Sign. Text: " + this.line);
+        Player owner = null;
+        String temp = null;
+        Location pos = null;
+        if (inventory instanceof MinecartManiaChest) {
+            temp = ((MinecartManiaChest) inventory).getOwner();
+            pos = ((MinecartManiaChest) inventory).getLocation();
+        }
+        if (temp != null) {
+            owner = Bukkit.getServer().getPlayer(temp);
+        }
+        for (CompassDirection direction : directions) {
+            ItemMatcher[] list = getMatchers(direction);
+            for (ItemMatcher matcher : list) {
+                if (matcher != null) {
+                    int amount = matcher.getAmount(-1);
+                    while (withdraw.contains(matcher) && (!matcher.amountIsSet() || amount > 0)) {
+                        ItemStack itemStack = withdraw.getItem(withdraw.first(matcher));
+                        int toAdd = !matcher.amountIsSet() ? itemStack.getAmount() : (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
+                        if (!withdraw.canRemoveItem(itemStack.getTypeId(), toAdd, itemStack.getDurability())) {
+                            break; //if we are not allowed to remove the items, give up
+                        } else if (!inventory.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()), owner)) {
+                            break;
                         }
-                    } else {
-                        // Empty slot, count it.
-                        emptySlots++;
+                        withdraw.removeItem(itemStack.getTypeId(), toAdd, itemStack.getDurability());
+                        amount -= toAdd;
+                        MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s %s;%d @ %s", toAdd, itemStack.getType().name(), itemStack.getDurability(), pos.toString()));
                     }
                 }
-                // And finally, add up the number of empty slots (times stack size) and how much slack we have.
-                // If larger than the amount requested (or the stuff available in the cart), then use the requested number.
-                int amount = (emptySlots * maxamount) + slack;
-                
-                // If there's no room, then just don't bother.
-                if (amount <= 0)
-                    continue;
-                
-                String amountDebug = "";
-                // Get the amount we want to add to the slot
-                int amountInCart = withdraw.amount(matcher);
-                
-                if (!matcher.amountIsSet()) {
-                    amount = amountInCart;
-                    amountDebug = String.format("amount = %d (matcher not set)", amountInCart);
-                } else {
-                    if (amountInCart > matcher.getAmount(Integer.MAX_VALUE)) {
-                        amount = matcher.getAmount(Integer.MAX_VALUE);
-                        amountDebug = String.format("amount = %d (%d > %d)", amount, amountInCart, matcher.getAmount(Integer.MAX_VALUE));
-                    } else {
-                        amount = amountInCart;
-                        amountDebug = String.format("amount = %d (%d <= %d)", amount, amountInCart, matcher.getAmount(Integer.MIN_VALUE));
-                    }
-                }
-                
-                // If we're going to be removing nothing, then just don't bother.
-                if (amount <= 0)
-                    continue;
-                
-                String error = "";
-                // Try to remove the items from the chest.
-                if (withdraw.removeItem(item.getTypeId(), amount, item.getDurability())) {
-                    // Awesome, add it to the cart.
-                    if (inventory.addItem(new ItemStack(item.getTypeId(), amount, item.getDurability()))) {
-                        MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s;%d@%d", item.getTypeId(), item.getDurability(), amount));
-                        continue;
-                    } else {
-                        error = "Failed to add to chest: " + inventory.getFailureReason();
-                    }
-                } else {
-                    error = "Failed to remove from cart: " + withdraw.getFailureReason();
-                }
-                error += "\n" + amountDebug;
-                MinecartManiaLogger.getInstance().info(String.format("[Collect Items]  FAILED to collect %s;%d@%d: %s", item.getTypeId(), item.getDurability(), amount, error));
-                //Failed, restore backup of inventory
-                withdraw.setContents(cartContents);
-                inventory.setContents(chestContents);
-                return;
             }
         }
     }
