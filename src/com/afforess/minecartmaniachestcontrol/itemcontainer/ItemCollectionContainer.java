@@ -46,7 +46,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                         }
                         withdraw.removeItem(itemStack.getTypeId(), toAdd, itemStack.getDurability());
                         amount -= toAdd;
-                        MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s %s;%d @ %s", toAdd, itemStack.getType().name(), itemStack.getDurability(), pos.toString()));
+                        MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s %s;%d @ %s", toAdd, itemStack.getType().name(), itemStack.getDurability(), pos));
                     }
                 }
             }

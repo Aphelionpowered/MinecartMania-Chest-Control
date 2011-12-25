@@ -36,7 +36,7 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                         }
                         inventory.removeItem(itemStack.getTypeId(), toAdd, itemStack.getDurability());
                         amount -= toAdd;
-                        MinecartManiaLogger.getInstance().info(String.format("[Deposit Items] Deposited %s %s;%d @ %s", toAdd, itemStack.getType().name(), itemStack.getDurability(), pos.toString()));
+                        MinecartManiaLogger.getInstance().info(String.format("[Deposit Items] Deposited %s %s;%d @ %s", toAdd, itemStack.getType().name(), itemStack.getDurability(), pos));
                     }
                 }
             }
