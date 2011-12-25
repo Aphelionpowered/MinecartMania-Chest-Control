@@ -20,7 +20,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
     }
     
     public void doCollection(final MinecartManiaInventory withdraw) {
-        MinecartManiaLogger.getInstance().debug("Processing Collection Sign. Text: " + this.line);
+        MinecartManiaLogger.getInstance().debug("Processing Collection Sign. Text: " + line);
         Player owner = null;
         String temp = null;
         Location pos = null;
@@ -31,14 +31,14 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
         if (temp != null) {
             owner = Bukkit.getServer().getPlayer(temp);
         }
-        for (CompassDirection direction : directions) {
-            ItemMatcher[] list = getMatchers(direction);
-            for (ItemMatcher matcher : list) {
+        for (final CompassDirection direction : directions) {
+            final ItemMatcher[] list = getMatchers(direction);
+            for (final ItemMatcher matcher : list) {
                 if (matcher != null) {
                     int amount = matcher.getAmount(-1);
-                    while (withdraw.contains(matcher) && (!matcher.amountIsSet() || amount > 0)) {
-                        ItemStack itemStack = withdraw.getItem(withdraw.first(matcher));
-                        int toAdd = !matcher.amountIsSet() ? itemStack.getAmount() : (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
+                    while (withdraw.contains(matcher) && (!matcher.amountIsSet() || (amount > 0))) {
+                        final ItemStack itemStack = withdraw.getItem(withdraw.first(matcher));
+                        final int toAdd = !matcher.amountIsSet() ? itemStack.getAmount() : (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
                         if (!withdraw.canRemoveItem(itemStack.getTypeId(), toAdd, itemStack.getDurability())) {
                             break; //if we are not allowed to remove the items, give up
                         } else if (!inventory.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()), owner)) {

@@ -26,9 +26,9 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
             for (final ItemMatcher matcher : getMatchers(direction)) {
                 if (matcher != null) {
                     int amount = matcher.getAmount(-1);
-                    while (inventory.contains(matcher) && (!matcher.amountIsSet() || amount > 0)) {
-                        ItemStack itemStack = inventory.getItem(inventory.first(matcher));
-                        int toAdd = !matcher.amountIsSet() ? itemStack.getAmount() : (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
+                    while (inventory.contains(matcher) && (!matcher.amountIsSet() || (amount > 0))) {
+                        final ItemStack itemStack = inventory.getItem(inventory.first(matcher));
+                        final int toAdd = !matcher.amountIsSet() ? itemStack.getAmount() : (itemStack.getAmount() > amount ? amount : itemStack.getAmount());
                         if (!inventory.canRemoveItem(itemStack.getTypeId(), toAdd, itemStack.getDurability())) {
                             break; //if we are not allowed to remove the items, give up
                         } else if (!deposit.addItem(new ItemStack(itemStack.getTypeId(), toAdd, itemStack.getDurability()))) {
