@@ -73,9 +73,28 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                 }
                 // And finally, add up the number of empty slots (times stack size) and how much slack we have.
                 // If larger than the amount requested (or the stuff available in the cart), then use the requested number.
-                final int amount = Math.min(amountRequested, (emptySlots * maxamount) + slack);
-                String amountDebug = String.format("amount = (%d * %d) + %d", emptySlots, maxamount, slack);
-                amountDebug += String.format("\nRequested: %d", amountRequested);
+                int amount = (emptySlots * maxamount) + slack;
+                
+                // If there's no room, then just don't bother.
+                if (amount <= 0)
+                    continue;
+                
+                String amountDebug = "";
+                // Get the amount we want to add to the slot
+                int amountInChest = inventory.amount(matcher);
+                
+                if (!matcher.amountIsSet()) {
+                    amount = amountInChest;
+                    amountDebug = String.format("amount = %d (matcher not set)", amountInChest);
+                } else {
+                    if (amountInChest > matcher.getAmount(Integer.MAX_VALUE)) {
+                        amount = matcher.getAmount(Integer.MAX_VALUE);
+                        amountDebug = String.format("amount = %d (%d > %d)", amount, amountInChest, matcher.getAmount(Integer.MAX_VALUE));
+                    } else {
+                        amount = amountInChest;
+                        amountDebug = String.format("amount = %d (%d <= %d)", amount, amountInChest, matcher.getAmount(Integer.MIN_VALUE));
+                    }
+                }
                 
                 // If we're going to be removing nothing, then just don't bother.
                 if (amount <= 0)
