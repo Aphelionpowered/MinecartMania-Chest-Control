@@ -2,7 +2,11 @@ package com.afforess.minecartmaniachestcontrol;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import net.minecraft.server.CraftingManager;
 import net.minecraft.server.ShapedRecipes;
@@ -15,7 +19,7 @@ import com.afforess.minecartmaniacore.world.SpecificMaterial;
 
 public class RecipeManager {
     public static class RecipeData {
-        public List<ItemStack> ingredients = new ArrayList<ItemStack>();
+        public Collection<ItemStack> ingredients = new ArrayList<ItemStack>();
         public ItemStack results = null;
     }
     
@@ -42,10 +46,10 @@ public class RecipeManager {
             
             if ((recipeData.ingredients != null) && (recipeData.ingredients.size() > 0)) {
                 recipes.add(recipeData);
-                //Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
-                //for (ItemStack ingredient : recipeData.ingredients) {
-                //    Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
-                //}
+                Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
+                for (ItemStack ingredient : recipeData.ingredients) {
+                    Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
+                }
             }
         }
     }
@@ -94,7 +98,7 @@ public class RecipeManager {
         return ingredients;
     }
     
-    private static List<ItemStack> extractIngredients(final ShapedRecipes recipe) {
+    private static Collection<ItemStack> extractIngredients(final ShapedRecipes recipe) {
         net.minecraft.server.ItemStack[] ingredients;
         
         try {
@@ -105,40 +109,37 @@ public class RecipeManager {
             return null;
         }
         
-        final List<ItemStack> r = new ArrayList<ItemStack>();
+        final HashMap<SpecificMaterial, ItemStack> cRecipe = new HashMap<SpecificMaterial, ItemStack>();
         
-        for (final net.minecraft.server.ItemStack item : ingredients) {
+        for (int i = 0; i < ingredients.length; i++) {
+            net.minecraft.server.ItemStack item = ingredients[i];
             if (item != null) {
-                boolean found = false;
-                for (int j = 0; j < r.size(); j++) {
-                    final ItemStack b_item = r.get(j);
+                SpecificMaterial mat = new SpecificMaterial(item.id, item.getData());
+                if (cRecipe.containsKey(mat)) {
+                    final ItemStack b_item = cRecipe.get(mat);
                     if ((b_item.getTypeId() == item.id) && (b_item.getDurability() == item.getData())) {
                         b_item.setAmount(b_item.getAmount() + 1);
                         if (b_item.getAmount() > 9) {
                             b_item.setAmount(9);
                         }
-                        r.set(j, b_item);
-                        found = true;
+                        cRecipe.put(mat, b_item);
                         break;
                     }
-                }
-                if (!found) {
+                } else {
                     final ItemStack is = new CraftItemStack(item.cloneItemStack());
                     if (is.getAmount() > 9) {
                         is.setAmount(9);
                     }
-                    r.add(is);
+                    cRecipe.put(mat, is);
                 }
             }
         }
-        for (int j = 0; j < r.size(); j++) {
-            final ItemStack citem = r.get(j);
-            if (citem.getAmount() > 9) {
-                citem.setAmount(9);
+        for (Entry<SpecificMaterial, ItemStack> citem : cRecipe.entrySet()) {
+            if (citem.getValue().getAmount() > 9) {
+                citem.getValue().setAmount(9);
             }
-            r.set(j, citem);
         }
-        return r;
+        return cRecipe.values();
     }
     
     private static Object getPrivateField(final Object object, final String field) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
