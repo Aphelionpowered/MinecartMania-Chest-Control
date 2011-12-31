@@ -126,7 +126,7 @@ public abstract class ChestStorage {
     
     public static void doCrafting(final MinecartManiaStorageCart minecart) {
         //Efficiency. Don't process overlapping tiles repeatedly, waste of time
-        final int interval = minecart.getDataValue("Craft Interval") == null ? -1 : (Integer) minecart.getDataValue("Farm Interval");
+        final int interval = minecart.getDataValue("Craft Interval") == null ? -1 : (Integer) minecart.getDataValue("Craft Interval");
         if (interval > 0) {
             minecart.setDataValue("Craft Interval", interval - 1);
         } else {
