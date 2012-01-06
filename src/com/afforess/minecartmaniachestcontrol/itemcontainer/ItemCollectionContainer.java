@@ -1,7 +1,11 @@
 package com.afforess.minecartmaniachestcontrol.itemcontainer;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -10,6 +14,7 @@ import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
+import com.afforess.minecartmaniacore.world.SpecificMaterial;
 
 public class ItemCollectionContainer extends GenericItemContainer implements ItemContainer {
     private final MinecartManiaInventory inventory;
@@ -23,15 +28,20 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
         MinecartManiaLogger.getInstance().debug("Processing Collection Sign. Text: " + line);
         Player owner = null;
         String temp = null;
-        Location pos = null;
+        String pos = "??? (" + inventory.getClass().getCanonicalName() + ")";
+        Location loc = null;
         if (inventory instanceof MinecartManiaChest) {
             temp = ((MinecartManiaChest) inventory).getOwner();
-            pos = ((MinecartManiaChest) inventory).getLocation();
+            loc = ((MinecartManiaChest) inventory).getLocation();
         }
         if (temp != null) {
             owner = Bukkit.getServer().getPlayer(temp);
         }
+        if (loc != null) {
+            pos = String.format("%s @ %d,%d,%d", loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        }
         for (final CompassDirection direction : directions) {
+            HashMap<SpecificMaterial, Integer> debugInfo = new HashMap<SpecificMaterial, Integer>();
             final ItemMatcher[] list = getMatchers(direction);
             for (final ItemMatcher matcher : list) {
                 if (matcher != null) {
@@ -46,9 +56,19 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                         }
                         withdraw.removeItem(itemStack.getTypeId(), toAdd, itemStack.getDurability());
                         amount -= toAdd;
-                        MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s %s;%d @ %s", toAdd, itemStack.getType().name(), itemStack.getDurability(), pos));
+                        
+                        // DEBUGGING
+                        SpecificMaterial mat = new SpecificMaterial(itemStack.getTypeId(), itemStack.getDurability());
+                        if (!debugInfo.containsKey(mat)) {
+                            debugInfo.put(mat, toAdd);
+                        } else {
+                            debugInfo.put(mat, debugInfo.get(mat) + toAdd);
+                        }
                     }
                 }
+            }
+            for (Entry<SpecificMaterial, Integer> entry : debugInfo.entrySet()) {
+                MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s %s;%d @ %s", entry.getValue(), Material.getMaterial(entry.getKey().id).name(), entry.getKey().durability, pos));
             }
         }
     }
