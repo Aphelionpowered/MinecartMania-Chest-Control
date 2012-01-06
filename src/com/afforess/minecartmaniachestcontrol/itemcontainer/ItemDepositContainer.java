@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.afforess.minecartmaniacore.debug.MinecartManiaLogger;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
+import com.afforess.minecartmaniacore.inventory.MinecartManiaDoubleChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
@@ -27,6 +28,9 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
         Location loc = null;
         if (inventory instanceof MinecartManiaChest) {
             loc = ((MinecartManiaChest) inventory).getLocation();
+        }
+        if (inventory instanceof MinecartManiaDoubleChest) {
+            loc = ((MinecartManiaDoubleChest) inventory).getLocation();
         }
         if (loc != null) {
             pos = String.format("%s @ %d,%d,%d", loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());

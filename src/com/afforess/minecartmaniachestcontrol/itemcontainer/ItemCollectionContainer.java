@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.afforess.minecartmaniacore.debug.MinecartManiaLogger;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
+import com.afforess.minecartmaniacore.inventory.MinecartManiaDoubleChest;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaInventory;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.utils.ItemMatcher;
@@ -33,6 +34,10 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
         if (inventory instanceof MinecartManiaChest) {
             temp = ((MinecartManiaChest) inventory).getOwner();
             loc = ((MinecartManiaChest) inventory).getLocation();
+        }
+        if (inventory instanceof MinecartManiaDoubleChest) {
+            temp = ((MinecartManiaDoubleChest) inventory).getOwner();
+            loc = ((MinecartManiaDoubleChest) inventory).getLocation();
         }
         if (temp != null) {
             owner = Bukkit.getServer().getPlayer(temp);
