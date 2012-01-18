@@ -46,7 +46,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
             pos = String.format("%s @ %d,%d,%d", loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         }
         for (final CompassDirection direction : directions) {
-            HashMap<SpecificMaterial, Integer> debugInfo = new HashMap<SpecificMaterial, Integer>();
+            final HashMap<SpecificMaterial, Integer> debugInfo = new HashMap<SpecificMaterial, Integer>();
             final ItemMatcher[] list = getMatchers(direction);
             for (final ItemMatcher matcher : list) {
                 if (matcher != null) {
@@ -63,7 +63,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                         amount -= toAdd;
                         
                         // DEBUGGING
-                        SpecificMaterial mat = new SpecificMaterial(itemStack.getTypeId(), itemStack.getDurability());
+                        final SpecificMaterial mat = new SpecificMaterial(itemStack.getTypeId(), itemStack.getDurability());
                         if (!debugInfo.containsKey(mat)) {
                             debugInfo.put(mat, toAdd);
                         } else {
@@ -72,7 +72,7 @@ public class ItemCollectionContainer extends GenericItemContainer implements Ite
                     }
                 }
             }
-            for (Entry<SpecificMaterial, Integer> entry : debugInfo.entrySet()) {
+            for (final Entry<SpecificMaterial, Integer> entry : debugInfo.entrySet()) {
                 MinecartManiaLogger.getInstance().info(String.format("[Collect Items] Collected %s %s;%d @ %s", entry.getValue(), Material.getMaterial(entry.getKey().id).name(), entry.getKey().durability, pos));
             }
         }

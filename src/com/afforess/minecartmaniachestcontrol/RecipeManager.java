@@ -47,7 +47,7 @@ public class RecipeManager {
             if ((recipeData.ingredients != null) && (recipeData.ingredients.size() > 0)) {
                 recipes.add(recipeData);
                 Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
-                for (ItemStack ingredient : recipeData.ingredients) {
+                for (final ItemStack ingredient : recipeData.ingredients) {
                     Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
                 }
             }
@@ -111,10 +111,9 @@ public class RecipeManager {
         
         final HashMap<SpecificMaterial, ItemStack> cRecipe = new HashMap<SpecificMaterial, ItemStack>();
         
-        for (int i = 0; i < ingredients.length; i++) {
-            net.minecraft.server.ItemStack item = ingredients[i];
+        for (final net.minecraft.server.ItemStack item : ingredients) {
             if (item != null) {
-                SpecificMaterial mat = new SpecificMaterial(item.id, item.getData());
+                final SpecificMaterial mat = new SpecificMaterial(item.id, item.getData());
                 if (cRecipe.containsKey(mat)) {
                     final ItemStack b_item = cRecipe.get(mat);
                     if ((b_item.getTypeId() == item.id) && (b_item.getDurability() == item.getData())) {
@@ -134,7 +133,7 @@ public class RecipeManager {
                 }
             }
         }
-        for (Entry<SpecificMaterial, ItemStack> citem : cRecipe.entrySet()) {
+        for (final Entry<SpecificMaterial, ItemStack> citem : cRecipe.entrySet()) {
             if (citem.getValue().getAmount() > 9) {
                 citem.getValue().setAmount(9);
             }
