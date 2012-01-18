@@ -109,13 +109,13 @@ public class SignCommands {
     
     public static CompassDirection getDirection(final Location loc1, final Location loc2) {
         if ((loc1.getBlockX() - loc2.getBlockX()) > 0)
-            return CompassDirection.NORTH;
-        if ((loc1.getBlockX() - loc2.getBlockX()) < 0)
-            return CompassDirection.SOUTH;
-        if ((loc1.getBlockZ() - loc2.getBlockZ()) > 0)
-            return CompassDirection.EAST;
-        if ((loc1.getBlockZ() - loc2.getBlockZ()) < 0)
             return CompassDirection.WEST;
+        if ((loc1.getBlockX() - loc2.getBlockX()) < 0)
+            return CompassDirection.EAST;
+        if ((loc1.getBlockZ() - loc2.getBlockZ()) > 0)
+            return CompassDirection.NORTH;
+        if ((loc1.getBlockZ() - loc2.getBlockZ()) < 0)
+            return CompassDirection.SOUTH;
         
         return CompassDirection.NO_DIRECTION;
     }
