@@ -29,7 +29,7 @@
     <repositories>
         <repository>
             <id>bukkit-repo</id>
-            <url>http://repo.bukkit.org/artifactory/repo</url>
+            <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
 		<!-- Firewalled, mirrored by NexisONLINE when it comes back up.
         <repository>
@@ -56,14 +56,14 @@
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
-			<version>1.0.1-R2-7CLAMS-SNAPSHOT</version>
+			<version>1.1-R1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- CraftBukkit -->
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
-			<version>1.0.1-R2-7CLAMS-SNAPSHOT</version>
+			<version>1.1-R1-SNAPSHOT</version>
 		</dependency>
     </dependencies>
 

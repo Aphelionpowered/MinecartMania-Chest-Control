@@ -36,7 +36,7 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
             pos = String.format("%s @ %d,%d,%d", loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
         }
         for (final CompassDirection direction : directions) {
-            HashMap<SpecificMaterial, Integer> debugInfo = new HashMap<SpecificMaterial, Integer>();
+            final HashMap<SpecificMaterial, Integer> debugInfo = new HashMap<SpecificMaterial, Integer>();
             for (final ItemMatcher matcher : getMatchers(direction)) {
                 if (matcher != null) {
                     int amount = matcher.getAmount(-1);
@@ -52,7 +52,7 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                         amount -= toAdd;
                         
                         // DEBUGGING
-                        SpecificMaterial mat = new SpecificMaterial(itemStack.getTypeId(), itemStack.getDurability());
+                        final SpecificMaterial mat = new SpecificMaterial(itemStack.getTypeId(), itemStack.getDurability());
                         if (!debugInfo.containsKey(mat)) {
                             debugInfo.put(mat, toAdd);
                         } else {
@@ -61,7 +61,7 @@ public class ItemDepositContainer extends GenericItemContainer implements ItemCo
                     }
                 }
             }
-            for (Entry<SpecificMaterial, Integer> entry : debugInfo.entrySet()) {
+            for (final Entry<SpecificMaterial, Integer> entry : debugInfo.entrySet()) {
                 MinecartManiaLogger.getInstance().info(String.format("[Deposit Items] Deposited %s %s;%d @ %s", entry.getValue(), Material.getMaterial(entry.getKey().id).name(), entry.getKey().durability, pos));
             }
         }
