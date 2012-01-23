@@ -1,6 +1,7 @@
 package com.afforess.minecartmaniachestcontrol;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,8 @@ import com.afforess.minecartmaniacore.utils.SignUtils;
 
 public class SignCommands {
     
+	static Logger _log = Logger.getLogger("Minecraft");
+	
     public static boolean isNoCollection(final MinecartManiaChest chest) {
         final ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(chest.getLocation(), 2);
         for (final Sign sign : signList) {
@@ -53,6 +56,8 @@ public class SignCommands {
         return Material.MINECART;
     }
     
+    // NOTE: Bukkit getRelative() still seems to follow old directionality. As a quick fix,
+    //       all calls to getAdjacentTrack() have been changed into "wrong" looking ones!
     public static Location getSpawnLocationSignOverride(final MinecartManiaChest chest) {
         final ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(chest.getLocation(), 2);
         final Location spawn = chest.getLocation();
@@ -63,33 +68,33 @@ public class SignCommands {
             for (int i = 0; i < sign.getNumLines(); i++) {
                 if (sign.getLine(i).toLowerCase().contains("spawn north")) {
                     sign.setLine(i, "[Spawn North]");
-                    result = getAdjacentTrack(spawn.getBlock(), BlockFace.NORTH);
-                    if ((result == null) && (neighbor != null))
-                        return getAdjacentTrack(neighbor, BlockFace.NORTH);
-                    else
-                        return result;
-                }
-                if (sign.getLine(i).toLowerCase().contains("spawn east")) {
-                    sign.setLine(i, "[Spawn East]");
                     result = getAdjacentTrack(spawn.getBlock(), BlockFace.EAST);
                     if ((result == null) && (neighbor != null))
                         return getAdjacentTrack(neighbor, BlockFace.EAST);
                     else
                         return result;
                 }
-                if (sign.getLine(i).toLowerCase().contains("spawn south")) {
-                    sign.setLine(i, "[Spawn South]");
+                if (sign.getLine(i).toLowerCase().contains("spawn east")) {
+                    sign.setLine(i, "[Spawn East]");
                     result = getAdjacentTrack(spawn.getBlock(), BlockFace.SOUTH);
                     if ((result == null) && (neighbor != null))
                         return getAdjacentTrack(neighbor, BlockFace.SOUTH);
                     else
                         return result;
                 }
-                if (sign.getLine(i).toLowerCase().contains("spawn west")) {
-                    sign.setLine(i, "[Spawn West]");
+                if (sign.getLine(i).toLowerCase().contains("spawn south")) {
+                    sign.setLine(i, "[Spawn South]");
                     result = getAdjacentTrack(spawn.getBlock(), BlockFace.WEST);
                     if ((result == null) && (neighbor != null))
                         return getAdjacentTrack(neighbor, BlockFace.WEST);
+                    else
+                        return result;
+                }
+                if (sign.getLine(i).toLowerCase().contains("spawn west")) {
+                    sign.setLine(i, "[Spawn West]");
+                    result = getAdjacentTrack(spawn.getBlock(), BlockFace.NORTH);
+                    if ((result == null) && (neighbor != null))
+                        return getAdjacentTrack(neighbor, BlockFace.NORTH);
                     else
                         return result;
                 }

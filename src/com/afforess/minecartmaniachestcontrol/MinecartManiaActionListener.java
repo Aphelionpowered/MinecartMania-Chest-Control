@@ -3,6 +3,7 @@ package com.afforess.minecartmaniachestcontrol;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,6 +28,8 @@ import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 
 public class MinecartManiaActionListener extends MinecartManiaListener {
     
+	Logger _log = Logger.getLogger("Minecraft");
+	
     @Override
     public void onChestPoweredEvent(final ChestPoweredEvent event) {
         if (event.isPowered() && !event.isActionTaken()) {
@@ -40,7 +43,7 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
             if ((spawnLocation != null) && chest.contains(minecartType)) {
                 if (chest.canSpawnMinecart() && chest.removeItem(minecartType.getId())) {
                     final CompassDirection direction = SignCommands.getDirection(chest.getLocation(), spawnLocation);
-                    final MinecartManiaMinecart minecart = MinecartManiaWorld.spawnMinecart(spawnLocation, minecartType, chest);
+                	final MinecartManiaMinecart minecart = MinecartManiaWorld.spawnMinecart(spawnLocation, minecartType, chest);
                     minecart.setMotion(direction, (Double) MinecartManiaWorld.getConfigurationValue("SpawnAtSpeed"));
                     event.setActionTaken(true);
                 }
