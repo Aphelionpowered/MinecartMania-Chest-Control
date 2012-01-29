@@ -2,8 +2,6 @@ package com.afforess.minecartmaniachestcontrol;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,7 +29,8 @@ public class MinecartManiaChestControl extends JavaPlugin {
         description = instance.getDescription();
         server = Bukkit.getServer();
         MinecartManiaConfigurationParser.read(description.getName() + "Configuration.xml", MinecartManiaCore.getDataDirectoryRelativePath(), new ChestControlSettingParser());
-        Bukkit.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, listener, Priority.High, instance);
+        Bukkit.getServer().getPluginManager().registerEvents(listener, instance);
+        //        Bukkit.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, listener, Priority.High, instance);
         log.info(description.getName() + " version " + description.getVersion() + " is enabled!");
         
         RecipeManager.init();

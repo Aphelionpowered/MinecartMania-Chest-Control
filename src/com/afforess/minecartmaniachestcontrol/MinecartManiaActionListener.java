@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 
 import com.afforess.minecartmaniachestcontrol.itemcontainer.ItemCollectionManager;
 import com.afforess.minecartmaniachestcontrol.signs.MaximumItemAction;
@@ -28,6 +30,7 @@ import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 public class MinecartManiaActionListener extends MinecartManiaListener {
     
     @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onChestPoweredEvent(final ChestPoweredEvent event) {
         if (event.isPowered() && !event.isActionTaken()) {
             
@@ -49,6 +52,7 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
     }
     
     @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onMinecartManiaSignFoundEvent(final MinecartManiaSignFoundEvent event) {
         final Sign sign = event.getSign();
         SignAction test = new MaximumItemAction(sign);
@@ -62,6 +66,7 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
     }
     
     @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onMinecartActionEvent(final MinecartActionEvent event) {
         if (!event.isActionTaken()) {
             final MinecartManiaMinecart minecart = event.getMinecart();
@@ -88,6 +93,7 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
     }
     
     @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onMinecartDirectionChangeEvent(final MinecartDirectionChangeEvent event) {
         if (event.getMinecart().isStorageMinecart()) {
             ItemCollectionManager.updateContainerDirections((MinecartManiaStorageCart) event.getMinecart());
