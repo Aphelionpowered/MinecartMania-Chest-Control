@@ -46,10 +46,10 @@ public class RecipeManager {
             
             if ((recipeData.ingredients != null) && (recipeData.ingredients.size() > 0)) {
                 recipes.add(recipeData);
-                Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
-                for (final ItemStack ingredient : recipeData.ingredients) {
-                    Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
-                }
+                //Logger.getLogger("Minecraft").info("[RecipeManager] Recipe for " + recipeData.results.getType().name() + " (" + recipeData.results.getDurability() + "):");
+                //for (final ItemStack ingredient : recipeData.ingredients) {
+                //    Logger.getLogger("Minecraft").info(" * " + ingredient.getAmount() + "x " + ingredient.getType().name() + " (" + ingredient.getDurability() + ")");
+                //}
             }
         }
     }
