@@ -32,8 +32,11 @@ public class MinecartManiaChestControl extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(listener, instance);
         //        Bukkit.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, listener, Priority.High, instance);
         log.info(description.getName() + " version " + description.getVersion() + " is enabled!");
+/*
+        Required rewirte of RecipeManager using bukkit API
         
         RecipeManager.init();
+ */
     }
     
     private static void setInstance(final MinecartManiaChestControl newInstance) {

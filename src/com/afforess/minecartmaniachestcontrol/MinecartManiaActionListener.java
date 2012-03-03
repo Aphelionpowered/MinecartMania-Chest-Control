@@ -30,7 +30,7 @@ import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 
 public class MinecartManiaActionListener extends MinecartManiaListener {
     
-	Logger _log = Logger.getLogger("Minecraft");
+    final static Logger _log = Logger.getLogger("Minecraft");
 	
     @Override
     @EventHandler(priority = EventPriority.NORMAL)
@@ -89,7 +89,9 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
                 findSigns(locations);
                 ItemCollectionManager.createItemContainers((MinecartManiaStorageCart) event.getMinecart(), locations);
                 ChestStorage.doItemCompression((MinecartManiaStorageCart) minecart);
+ /* Need rewrite with bukkit API
                 ChestStorage.doCrafting((MinecartManiaStorageCart) minecart);
+  */
             }
             event.setActionTaken(action);
         }

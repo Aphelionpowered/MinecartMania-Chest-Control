@@ -10,7 +10,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 
-import com.afforess.minecartmaniachestcontrol.RecipeManager.RecipeData;
+/* Rewrite with bukkit API needed
+ * import com.afforess.minecartmaniachestcontrol.RecipeManager.RecipeData;
+ */
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaStorageCart;
@@ -123,7 +125,7 @@ public abstract class ChestStorage {
             System.out.println(msg);
         }
     }
-    
+/*    
     public static void doCrafting(final MinecartManiaStorageCart minecart) {
         //Efficiency. Don't process overlapping tiles repeatedly, waste of time
         final int interval = minecart.getDataValue("Craft Interval") == null ? -1 : (Integer) minecart.getDataValue("Craft Interval");
@@ -153,7 +155,7 @@ public abstract class ChestStorage {
                                 if (recipe == null) {
                                     continue; // Skip if we can't find it.
                                 }
-                                if ((recipe.ingredients == null) || (recipe.ingredients.size() == 0)) {
+                                if ((recipe.ingredients == null) || (recipe.ingredients.isEmpty())) {
                                     continue;
                                 }
                                 
@@ -264,7 +266,7 @@ public abstract class ChestStorage {
             }
         }
     }
-    
+*/    
     public static void doItemCompression(final MinecartManiaStorageCart minecart) {
         final HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
         for (final Block block : blockList) {

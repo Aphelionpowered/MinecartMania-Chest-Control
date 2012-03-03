@@ -1,4 +1,9 @@
-package com.afforess.minecartmaniachestcontrol;
+/*
+ * Complete rewrite requiered using the Bukkit API.
+ * Cannot/should'nt use private methods.
+ * CraftingManager.b no-longer exsists.
+ 
+ * package com.afforess.minecartmaniachestcontrol;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -165,3 +170,4 @@ public class RecipeManager {
         return null;
     }
 }
+ */
