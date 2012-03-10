@@ -1,14 +1,7 @@
-<!--
-  Maven build file for Minecart Mania Chest Control
-
-  Copyright (c) 2010-2011 Afforess <http://www.afforess.com>
-  Minecart Mania Chest Control is licensed under Creative Commons Attribution 3.0 Unported (CC BY 3.0)
--->
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Project information -->
+    
     <groupId>com.afforess</groupId>
     <artifactId>minecartmaniachestcontrol</artifactId>
     <version>2.0-SNAPSHOT</version>
@@ -16,7 +9,7 @@
     <url>http://afforess.com</url>
     <description>Chest Control handles everything inventory related. Chest Dispensers, item collection, item depositing, dispensers, furnaces, and any other inventory actions are controlled here.</description>
 
-    <!-- License -->
+    
     <licenses>
         <license>
             <name>Creative Commons Attribution 3.0 Unported (CC BY 3.0)</name>
@@ -25,19 +18,14 @@
         </license>
     </licenses>
 
-    <!-- Repository locations -->
+    
     <repositories>
         <repository>
             <id>bukkit-repo</id>
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
-		<!-- Firewalled, mirrored by NexisONLINE when it comes back up.
-        <repository>
-            <id>craftfire-repo</id>
-            <url>http://db.craftfire.com/repo</url>
-        </repository>
-		-->
-        <!-- For BigBrother integration -->
+		
+        
         <repository>
             <id>nexisonline-repo</id>
             <url>http://repo.nexisonline.net:8080/nexus/content/groups/public/</url>
@@ -45,14 +33,14 @@
     </repositories>
 
     <dependencies>
-        <!-- Required component -->
+        
         <dependency>
             <groupId>com.afforess</groupId>
             <artifactId>minecartmaniacore</artifactId>
             <version>2.0-SNAPSHOT</version>
         </dependency>
 
-		<!-- Bukkit -->
+		
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>bukkit</artifactId>
@@ -60,7 +48,7 @@
 		 <type>jar</type>
 		</dependency>
 
-		<!-- CraftBukkit -->
+		
 		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
@@ -71,7 +59,7 @@
     <build>
         <sourceDirectory>${basedir}/src/</sourceDirectory>
 
-        <!-- Resources -->
+        
         <resources>
             <resource>
                 <targetPath>.</targetPath>
@@ -84,17 +72,17 @@
             </resource>
         </resources>
 
-        <!-- Plugins -->
+        
         <plugins>
 
-            <!-- Compile plugin -->
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
             </plugin>
 
-            <!-- JAR creation plugin -->
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
