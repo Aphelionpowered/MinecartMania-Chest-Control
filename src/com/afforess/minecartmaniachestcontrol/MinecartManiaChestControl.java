@@ -16,6 +16,7 @@ public class MinecartManiaChestControl extends JavaPlugin {
     public static PluginDescriptionFile description;
     public static final MinecartManiaActionListener listener = new MinecartManiaActionListener();
     
+    @Override
     public void onEnable() {
         MinecartManiaChestControl.performStartup(this);
     }
@@ -32,17 +33,18 @@ public class MinecartManiaChestControl extends JavaPlugin {
         Bukkit.getServer().getPluginManager().registerEvents(listener, instance);
         //        Bukkit.getServer().getPluginManager().registerEvent(Event.Type.CUSTOM_EVENT, listener, Priority.High, instance);
         log.info(description.getName() + " version " + description.getVersion() + " is enabled!");
-/*
-        Required rewirte of RecipeManager using bukkit API
-        
-        RecipeManager.init();
- */
+        /*
+         * Required rewirte of RecipeManager using bukkit API
+         * 
+         * RecipeManager.init();
+         */
     }
     
     private static void setInstance(final MinecartManiaChestControl newInstance) {
         instance = newInstance;
     }
     
+    @Override
     public void onDisable() {
         
     }

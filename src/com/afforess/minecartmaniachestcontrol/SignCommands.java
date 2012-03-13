@@ -17,8 +17,8 @@ import com.afforess.minecartmaniacore.utils.SignUtils;
 
 public class SignCommands {
     
-	static Logger _log = Logger.getLogger("Minecraft");
-	
+    static Logger _log = Logger.getLogger("Minecraft");
+    
     public static boolean isNoCollection(final MinecartManiaChest chest) {
         final ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(chest.getLocation(), 2);
         for (final Sign sign : signList) {

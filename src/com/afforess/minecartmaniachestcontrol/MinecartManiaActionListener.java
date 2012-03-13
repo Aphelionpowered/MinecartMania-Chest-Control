@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
 import com.afforess.minecartmaniachestcontrol.itemcontainer.ItemCollectionManager;
 import com.afforess.minecartmaniachestcontrol.signs.MaximumItemAction;
@@ -16,7 +17,6 @@ import com.afforess.minecartmaniachestcontrol.signs.MinimumItemAction;
 import com.afforess.minecartmaniacore.event.ChestPoweredEvent;
 import com.afforess.minecartmaniacore.event.MinecartActionEvent;
 import com.afforess.minecartmaniacore.event.MinecartDirectionChangeEvent;
-import com.afforess.minecartmaniacore.event.MinecartManiaListener;
 import com.afforess.minecartmaniacore.event.MinecartManiaSignFoundEvent;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
@@ -28,11 +28,10 @@ import com.afforess.minecartmaniacore.utils.ComparableLocation;
 import com.afforess.minecartmaniacore.utils.DirectionUtils.CompassDirection;
 import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
 
-public class MinecartManiaActionListener extends MinecartManiaListener {
+public class MinecartManiaActionListener implements Listener {
     
     final static Logger _log = Logger.getLogger("Minecraft");
-	
-    @Override
+    
     @EventHandler(priority = EventPriority.NORMAL)
     public void onChestPoweredEvent(final ChestPoweredEvent event) {
         if (event.isPowered() && !event.isActionTaken()) {
@@ -46,7 +45,7 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
             if ((spawnLocation != null) && chest.contains(minecartType)) {
                 if (chest.canSpawnMinecart() && chest.removeItem(minecartType.getId())) {
                     final CompassDirection direction = SignCommands.getDirection(chest.getLocation(), spawnLocation);
-                	final MinecartManiaMinecart minecart = MinecartManiaWorld.spawnMinecart(spawnLocation, minecartType, chest);
+                    final MinecartManiaMinecart minecart = MinecartManiaWorld.spawnMinecart(spawnLocation, minecartType, chest);
                     minecart.setMotion(direction, (Double) MinecartManiaWorld.getConfigurationValue("SpawnAtSpeed"));
                     event.setActionTaken(true);
                 }
@@ -54,7 +53,6 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
         }
     }
     
-    @Override
     @EventHandler(priority = EventPriority.NORMAL)
     public void onMinecartManiaSignFoundEvent(final MinecartManiaSignFoundEvent event) {
         final Sign sign = event.getSign();
@@ -68,7 +66,6 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
         }
     }
     
-    @Override
     @EventHandler(priority = EventPriority.NORMAL)
     public void onMinecartActionEvent(final MinecartActionEvent event) {
         if (!event.isActionTaken()) {
@@ -89,15 +86,14 @@ public class MinecartManiaActionListener extends MinecartManiaListener {
                 findSigns(locations);
                 ItemCollectionManager.createItemContainers((MinecartManiaStorageCart) event.getMinecart(), locations);
                 ChestStorage.doItemCompression((MinecartManiaStorageCart) minecart);
- /* Need rewrite with bukkit API
-                ChestStorage.doCrafting((MinecartManiaStorageCart) minecart);
-  */
+                /*
+                 * Need rewrite with bukkit API ChestStorage.doCrafting((MinecartManiaStorageCart) minecart);
+                 */
             }
             event.setActionTaken(action);
         }
     }
     
-    @Override
     @EventHandler(priority = EventPriority.NORMAL)
     public void onMinecartDirectionChangeEvent(final MinecartDirectionChangeEvent event) {
         if (event.getMinecart().isStorageMinecart()) {
