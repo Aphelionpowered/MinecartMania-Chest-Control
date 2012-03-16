@@ -86,9 +86,7 @@ public class MinecartManiaActionListener implements Listener {
                 findSigns(locations);
                 ItemCollectionManager.createItemContainers((MinecartManiaStorageCart) event.getMinecart(), locations);
                 ChestStorage.doItemCompression((MinecartManiaStorageCart) minecart);
-                /*
-                 * Need rewrite with bukkit API ChestStorage.doCrafting((MinecartManiaStorageCart) minecart);
-                 */
+                ChestStorage.doCrafting((MinecartManiaStorageCart) minecart);
             }
             event.setActionTaken(action);
         }

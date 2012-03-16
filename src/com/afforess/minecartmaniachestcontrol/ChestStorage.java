@@ -2,6 +2,7 @@ package com.afforess.minecartmaniachestcontrol;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -9,13 +10,16 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 
+import com.afforess.minecartmaniachestcontrol.RecipeManager.RecipeData;
 import com.afforess.minecartmaniacore.inventory.MinecartManiaChest;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaMinecart;
 import com.afforess.minecartmaniacore.minecart.MinecartManiaStorageCart;
 import com.afforess.minecartmaniacore.signs.Sign;
+import com.afforess.minecartmaniacore.utils.ItemUtils;
 import com.afforess.minecartmaniacore.utils.MinecartUtils;
 import com.afforess.minecartmaniacore.utils.SignUtils;
 import com.afforess.minecartmaniacore.world.MinecartManiaWorld;
+import com.afforess.minecartmaniacore.world.SpecificMaterial;
 
 public abstract class ChestStorage {
     
@@ -120,40 +124,142 @@ public abstract class ChestStorage {
         }
     }
     
-    /*
-     * public static void doCrafting(final MinecartManiaStorageCart minecart) { //Efficiency. Don't process overlapping tiles repeatedly, waste of time final int interval = minecart.getDataValue("Craft Interval") == null ? -1 : (Integer) minecart.getDataValue("Craft Interval"); if (interval > 0) { minecart.setDataValue("Craft Interval", interval - 1); } else { minecart.setDataValue("Craft Interval", minecart.getRange() / 2); final HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange()); for (final Block block : blockList) { if (block.getTypeId() == Material.WORKBENCH.getId()) { final ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2); for (final Sign sign : signList) { if (sign.getLine(0).toLowerCase().contains("craft items")) { sign.setLine(0, "[Craft Items]"); // For each line on the sign String itemListString = ""; for (int i = 1; i < sign.getNumLines(); i++) { if (i > 1) { itemListString += ":"; } itemListString +=
-     * sign.getLine(i); } for (final SpecificMaterial item : ItemUtils.getItemStringListToMaterial(itemListString.split(":"))) { // Get the recipe, if possible final RecipeData recipe = RecipeManager.findRecipe(item);
-     * 
-     * if (recipe == null) { continue; // Skip if we can't find it. } if ((recipe.ingredients == null) || (recipe.ingredients.isEmpty())) { continue; }
-     * 
-     * boolean outOfIngredients = false;
-     * 
-     * int loops = 0;
-     * 
-     * final List<ItemStack> fixedIngredients = new ArrayList<ItemStack>();
-     * 
-     * debug(minecart, "RECIPE: " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")"); // Until we're out of ingredients, or the loop has been executed 64 times. while (!outOfIngredients && (loops < 64)) { fixedIngredients.clear();
-     * 
-     * loops++; // Loop through the list of ingredients for this recipe for (final ItemStack stack : recipe.ingredients) { boolean found = false;
-     * 
-     * if (stack.getDurability() == (short) -1) { // See what we have ItemStack subitem = null; for (int is = 0; is < minecart.size(); is++) { final ItemStack si = minecart.getItem(is); if ((si != null) && (si.getTypeId() == stack.getTypeId())) { subitem = si; break; }
-     * 
-     * } if (subitem == null) { continue; } stack.setDurability(subitem.getDurability());
-     * 
-     * // See if we have the needed ingredient final int num = minecart.amount(stack.getTypeId(), stack.getDurability()); if (minecart.amount(stack.getTypeId(), stack.getDurability()) < stack.getAmount()) { continue; } else { debug(minecart, "Cart has " + num + " " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")!"); found = true; break; } } else { if (stack.getDurability() == -1) { stack.setDurability((short) 0); }
-     * 
-     * // See if we have the needed ingredients if (minecart.amount(stack.getTypeId(), stack.getDurability()) >= stack.getAmount()) { found = true; } else { debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")"); outOfIngredients = true; break; } } if (!found) { outOfIngredients = true; debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")"); break; } else { //debug(minecart, "Ingredient found: " + stack.toString() + " (d: " + stack.getDurability() + ")"); fixedIngredients.add(stack); } }
-     * 
-     * if (outOfIngredients) { break; }
-     * 
-     * // Double-check debug(minecart, "Recipe for " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")"); for (final ItemStack stack : fixedIngredients) { if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) { debug(minecart, " + " + stack.toString() + " (d: " + stack.getDurability() + ")"); } else { debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")"); outOfIngredients = true; break; } }
-     * 
-     * if (outOfIngredients) { break; }
-     * 
-     * if (!minecart.canAddItem(recipe.results)) { debug(minecart, "CAI: " + recipe.results.toString()); outOfIngredients = true; break; }
-     * 
-     * // Loop through again to actually remove the items for (final ItemStack stack : fixedIngredients) { debug(minecart, "[Craft Items] Removed " + stack.toString() + " (d: " + stack.getDurability() + ") from minecart!"); minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability()); } // Take it from the cart minecart.addItem(recipe.results); debug(minecart, "[Craft Items] Added " + recipe.results.toString() + " to minecart!"); } } } } } } } }
-     */
+    public static void doCrafting(final MinecartManiaStorageCart minecart) {
+        //Efficiency. Don't process overlapping tiles repeatedly, waste of time 
+        final int interval = minecart.getDataValue("Craft Interval") == null ? -1 : (Integer) minecart.getDataValue("Craft Interval");
+        if (interval > 0) {
+            minecart.setDataValue("Craft Interval", interval - 1);
+        } else {
+            minecart.setDataValue("Craft Interval", minecart.getRange() / 2);
+            final HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
+            for (final Block block : blockList) {
+                if (block.getTypeId() == Material.WORKBENCH.getId()) {
+                    final ArrayList<Sign> signList = SignUtils.getAdjacentMinecartManiaSignList(block.getLocation(), 2);
+                    for (final Sign sign : signList) {
+                        if (sign.getLine(0).toLowerCase().contains("craft items")) {
+                            sign.setLine(0, "[Craft Items]"); // For each line on the sign 
+                            String itemListString = "";
+                            for (int i = 1; i < sign.getNumLines(); i++) {
+                                if (i > 1) {
+                                    itemListString += ":";
+                                }
+                                itemListString += sign.getLine(i);
+                            }
+                            for (final SpecificMaterial item : ItemUtils.getItemStringListToMaterial(itemListString.split(":"))) { // Get the recipe, if possible 
+                                final RecipeData recipe = RecipeManager.findRecipe(item);
+                                
+                                if (recipe == null) {
+                                    continue; // Skip if we can't find it. 
+                                }
+                                if ((recipe.ingredients == null) || (recipe.ingredients.isEmpty())) {
+                                    continue;
+                                }
+                                
+                                boolean outOfIngredients = false;
+                                
+                                int loops = 0;
+                                
+                                final List<ItemStack> fixedIngredients = new ArrayList<ItemStack>();
+                                
+                                debug(minecart, "RECIPE: " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")"); // Until we're out of ingredients, or the loop has been executed 64 times. 
+                                while (!outOfIngredients && (loops < 64)) {
+                                    fixedIngredients.clear();
+                                    
+                                    loops++; // Loop through the list of ingredients for this recipe 
+                                    for (final ItemStack stack : recipe.ingredients) {
+                                        boolean found = false;
+                                        
+                                        if (stack.getDurability() == (short) -1) { // See what we have 
+                                            ItemStack subitem = null;
+                                            for (int is = 0; is < minecart.size(); is++) {
+                                                final ItemStack si = minecart.getItem(is);
+                                                if ((si != null) && (si.getTypeId() == stack.getTypeId())) {
+                                                    subitem = si;
+                                                    break;
+                                                }
+                                                
+                                            }
+                                            if (subitem == null) {
+                                                continue;
+                                            }
+                                            stack.setDurability(subitem.getDurability());
+                                            
+                                            // See if we have the needed ingredient
+                                            final int num = minecart.amount(stack.getTypeId(), stack.getDurability());
+                                            if (minecart.amount(stack.getTypeId(), stack.getDurability()) < stack.getAmount()) {
+                                                continue;
+                                            } else {
+                                                debug(minecart, "Cart has " + num + " " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")!");
+                                                found = true;
+                                                break;
+                                            }
+                                        } else {
+                                            if (stack.getDurability() == -1) {
+                                                stack.setDurability((short) 0);
+                                            }
+                                            
+                                            // See if we have the needed ingredients 
+                                            if (minecart.amount(stack.getTypeId(), stack.getDurability()) >= stack.getAmount()) {
+                                                found = true;
+                                            } else {
+                                                debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
+                                                outOfIngredients = true;
+                                                break;
+                                            }
+                                        }
+                                        if (!found) {
+                                            outOfIngredients = true;
+                                            debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
+                                            break;
+                                        } else {
+                                            //debug(minecart, "Ingredient found: " + stack.toString() + " (d: " + stack.getDurability() + ")"); 
+                                            fixedIngredients.add(stack);
+                                        }
+                                    }
+                                    
+                                    if (outOfIngredients) {
+                                        break;
+                                    }
+                                    
+                                    // Double-check 
+                                    debug(minecart, "Recipe for " + recipe.results.toString() + " (d: " + recipe.results.getDurability() + ")");
+                                    for (final ItemStack stack : fixedIngredients) {
+                                        if (minecart.canRemoveItem(stack.getTypeId(), stack.getAmount(), stack.getDurability())) {
+                                            debug(minecart, " + " + stack.toString() + " (d: " + stack.getDurability() + ")");
+                                        } else {
+                                            debug(minecart, "OOI: " + stack.toString() + " (d: " + stack.getDurability() + ")");
+                                            outOfIngredients = true;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (outOfIngredients) {
+                                        break;
+                                    }
+                                    
+                                    if (!minecart.canAddItem(recipe.results)) {
+                                        debug(minecart, "CAI: " + recipe.results.toString());
+                                        outOfIngredients = true;
+                                        break;
+                                    }
+                                    
+                                    // Loop through again to actually remove the items 
+                                    for (final ItemStack stack : fixedIngredients) {
+                                        debug(minecart, "[Craft Items] Removed " + stack.toString() + " (d: " + stack.getDurability() + ") from minecart!");
+                                        minecart.removeItem(stack.getTypeId(), stack.getAmount(), stack.getDurability());
+                                    }
+                                    // Take it from the cart 
+                                    minecart.addItem(recipe.results);
+                                    debug(minecart, "[Craft Items] Added " + recipe.results.toString() + " to minecart!");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     public static void doItemCompression(final MinecartManiaStorageCart minecart) {
         final HashSet<Block> blockList = minecart.getAdjacentBlocks(minecart.getRange());
         for (final Block block : blockList) {
